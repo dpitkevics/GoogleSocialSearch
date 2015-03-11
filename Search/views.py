@@ -8,12 +8,15 @@ def index(request):
     if 'query' in request.GET:
         form = SearchForm(request.GET)
 
-        search.do_search(request.GET['query'])
+        search_result = search.do_search(request.GET['query'])
     else:
         form = SearchForm()
 
+        search_result = None
+
     context = {
         'form': form,
+        'search_result': search_result,
     }
 
     return render(request, 'Search/index.html', context)
