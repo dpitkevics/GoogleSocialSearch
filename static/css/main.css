@@ -5,3 +5,17 @@ a.navbar-brand {
 a.navbar-brand > img {
     height: 30px;
 }
+
+.search-result-item {
+    border-bottom: solid 1px #4e5d6c;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.search-result-snippet {
+    margin-top: 15px;
+}
+
+.new-window-icon {
+    font-size: 10px;
+}

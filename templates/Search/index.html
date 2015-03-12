@@ -1,6 +1,10 @@
 {% extends 'base_generic.html' %}
 
 {% load i18n %}
+{% load templating %}
+{% load settings %}
+
+{% block title %}{% title search_result.request.search_terms %}{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -16,23 +20,40 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 {% for item in search_result.items %}
-                    <div class="row">
+                    <div class="row search-result-item">
                         <div class="col-md-4 col-sm-12">
                             <div class="row">
-                                <h4>
-                                    <a href="{{ item.link }}" target="_blank">{{ item }}</a>
-                                </h4>
+                                <div class="col-md-12 col-sm-12">
+                                    <h4>
+                                        {% settings_context "LINKS_NEW_WINDOW" as LINKS_NEW_WINDOW %}
+                                        <a href="{{ item.link }}" {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
+                                            {% if LINKS_NEW_WINDOW == True %}
+                                                <i class="glyphicon glyphicon-new-window new-window-icon"></i>
+                                            {% endif %}
+                                            {{ item }}
+                                        </a>
+                                    </h4>
+                                </div>
                             </div>
 
                             <div class="row">
-                                {% trans 'Found in:' %} {{ item.formatted_url }}
+                                <div class="col-md-12 col-sm-12">
+                                    {% trans 'Found in:' %} <span class="text-info">{{ item.formatted_url }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-8 col-sm-12">
+
+                        <div class="col-md-8 col-sm-12 search-result-snippet">
                             <p>{{ item.html_snippet|safe }}</p>
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12 text-center">
+                {% include 'Search/includes/pagination.html' with pagination=pagination %}
             </div>
         </div>
     {% endif %}

@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# Site Configuration
+SITE_NAME = 'Google Social Search'
+LINKS_NEW_WINDOW = True
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -36,6 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'GoogleSocialSearch',
+    'Search',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -92,5 +98,5 @@ TEMPLATE_DIRS = (
 )
 
 # Google Api Configuration
-API_KEY = 'AIzaSyBlthMzo2TWJMLcu5n_l1GWPZSyMqveZsY'
+API_KEY = 'AIzaSyBrM670Tag_vNzs7Ld66Cev43wbVbmd0DU'
 API_SEARCH_CX = '011767239663903188113:jx6ffcypnqs'

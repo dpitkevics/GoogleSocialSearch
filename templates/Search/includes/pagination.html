@@ -1,0 +1,11 @@
+{% load pagination %}
+
+<nav>
+    <ul class="pagination">
+        {% for page_number, page in pagination|retrieve_page_array %}
+            <li {% if page_number == 'current' %}class="active"{% endif %}>
+                <a href="{{ pagination|build_uri:page_number }}">{{ page }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
