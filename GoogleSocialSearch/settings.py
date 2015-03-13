@@ -64,8 +64,11 @@ WSGI_APPLICATION = 'GoogleSocialSearch.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '127.0.0.1',
+        'NAME': 'google_social_search',
+        'USER': 'google_social_search',
+        'PASSWORD': 'girjgoihrueh7wy34',
     }
 }
 

@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.http.response import HttpResponse
+
+import json
 
 from Search.forms import SearchForm
 from Search.lib import search
@@ -7,7 +10,6 @@ from Search.lib.pagination import Pagination
 
 
 def index(request):
-    suggestions.retrieve_suggestions('latvia')
     if 'query' in request.GET:
         form = SearchForm(request.GET)
 
@@ -19,6 +21,9 @@ def index(request):
         search_offset = 1 + ((current_page - 1) * 10)
 
         search_result = search.do_search(request.GET['query'], search_offset)
+
+        print(search_result.items.all())
+
         if search_result is not None:
             total_search_results = min(int(search_result.search_information.total_results), search.MAX_TOTAL_LOAD)
 
@@ -38,3 +43,10 @@ def index(request):
     }
 
     return render(request, 'Search/index.html', context)
+
+
+def suggestion(request):
+    suggestions_data = suggestions.retrieve_suggestions(request.GET['query'])
+    suggestions_data = suggestions_data[1]
+
+    return HttpResponse(json.dumps(suggestions_data), content_type='application/json')

@@ -19,3 +19,11 @@ a.navbar-brand > img {
 .new-window-icon {
     font-size: 10px;
 }
+
+ul.typeahead.dropdown-menu a {
+    padding: 10px 20px;
+}
+
+ul.typeahead.dropdown-menu a strong {
+    color: #5bc0de;
+}

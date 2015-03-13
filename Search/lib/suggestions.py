@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 def retrieve_suggestions(query):
@@ -6,4 +7,6 @@ def retrieve_suggestions(query):
 
     data = requests.get(url)
 
-    print(data.text)
+    decoded_data = json.loads(data.text)
+
+    return decoded_data

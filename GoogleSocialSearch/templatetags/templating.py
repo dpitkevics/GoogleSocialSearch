@@ -7,4 +7,7 @@ register = template.Library()
 
 @register.simple_tag
 def title(title_text):
-    return "%s - %s" % (title_text, SITE_NAME)
+    if len(title_text) > 0:
+        return "%s - %s" % (title_text, SITE_NAME)
+
+    return SITE_NAME

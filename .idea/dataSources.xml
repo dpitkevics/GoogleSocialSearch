@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="4047154473">
+  <component name="DataSourceManagerImpl" format="xml" hash="891577542">
     <data-source source="LOCAL" name="Django default" uuid="ff04aa3a-d1fc-4081-9d0f-9a5371bfa507">
       <driver-ref>sqlite.xerial</driver-ref>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\Daniels\PycharmProjects\GoogleSocialSearch\db.sqlite3</jdbc-url>
+      <jdbc-url>jdbc:mysql://127.0.0.1/google_social_search</jdbc-url>
       <libraries />
     </data-source>
   </component>
 </project>
-

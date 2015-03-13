@@ -16,7 +16,7 @@ class Form(forms.Form):
 
         for name, field in self.fields.items():
             if 'class' in field.widget.attrs and 'form-control' not in field.widget.attrs['class']:
-                field.widget.attrs['class'] += 'form-control'
+                field.widget.attrs['class'] += ' form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'
 
