@@ -10,7 +10,7 @@
 {% block content %}
     <div class="row">
         <div class="col-md-6 col-sm-12 col-md-offset-3">
-            <form action="{% url 'Search:index' %}" method="get">
+            <form action="{% url 'Search:index' %}" method="get" id="search-form">
                 {{ form }}
                 <input type="submit" class="btn btn-primary" value="Search" />
             </form>
@@ -76,12 +76,23 @@
     <script src="{% static 'js/bootstrap-typeahead.js' %}"></script>
 
     <script>
-        $('.typeahead').typeahead({
-            'source': function (query, process) {
-                return $.get('{% url 'Search:suggestion' %}', {query: query}, function (data) {
-                    return process(data);
-                });
-            }
+        $(function () {
+            var typeahead = $('.typeahead');
+
+            typeahead.typeahead({
+                'source': function (query, process) {
+                    return $.get('{% url 'Search:suggestion' %}', {query: query}, function (data) {
+                        return process(data);
+                    });
+                },
+                'updater': function(item) {
+                    // do what you want with the item here
+                    typeahead.val(item);
+
+                    $("#search-form").submit();
+                    return item;
+                }
+            });
         });
     </script>
 {% endblock %}

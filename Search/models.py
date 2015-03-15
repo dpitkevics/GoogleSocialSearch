@@ -22,8 +22,14 @@ class Request(models.Model):
     safe = models.CharField(max_length=8, default='off')
     cx = models.CharField(max_length=256)
 
+    request_count = models.IntegerField(default=1)
+
     class Meta:
         db_table = 'requests'
+
+    def requested(self):
+        self.request_count += 1
+        self.save()
 
 
 class NextPage(models.Model):
@@ -42,9 +48,9 @@ class NextPage(models.Model):
 
 
 class SearchResult(models.Model):
-    search_information = models.ForeignKey(SearchInformation)
-    request = models.ForeignKey(Request)
-    next_page = models.ForeignKey(NextPage)
+    search_information = models.OneToOneField(SearchInformation)
+    request = models.OneToOneField(Request)
+    next_page = models.OneToOneField(NextPage, null=True)
 
     class Meta:
         db_table = 'search_results'
@@ -95,8 +101,8 @@ class Item(models.Model):
     html_title = models.CharField(max_length=256)
     link = models.CharField(max_length=256)
     display_link = models.CharField(max_length=256)
-    snippet = models.CharField(max_length=256)
-    html_snippet = models.CharField(max_length=256)
+    snippet = models.CharField(max_length=512)
+    html_snippet = models.CharField(max_length=1024)
     cache_id = models.CharField(max_length=256)
     formatted_url = models.CharField(max_length=256)
     html_formatted_url = models.CharField(max_length=256)
@@ -104,3 +110,6 @@ class Item(models.Model):
 
     class Meta:
         db_table = 'items'
+
+    def __str__(self):
+        return self.title

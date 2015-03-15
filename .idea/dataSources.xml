@@ -3,9 +3,12 @@
   <component name="DataSourceManagerImpl" format="xml" hash="891577542">
     <data-source source="LOCAL" name="Django default" uuid="ff04aa3a-d1fc-4081-9d0f-9a5371bfa507">
       <driver-ref>sqlite.xerial</driver-ref>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1/google_social_search</jdbc-url>
+      <user-name>google_social_search</user-name>
+      <user-password>dfcddfc3dfd8dfc0dfcddfc5dfc3dfc2dfd8dfdfdfcfdfc2df9ddfdddfd3df99df9e</user-password>
       <libraries />
     </data-source>
   </component>
 </project>
+

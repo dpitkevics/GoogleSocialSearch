@@ -22,8 +22,6 @@ def index(request):
 
         search_result = search.do_search(request.GET['query'], search_offset)
 
-        print(search_result.items.all())
-
         if search_result is not None:
             total_search_results = min(int(search_result.search_information.total_results), search.MAX_TOTAL_LOAD)
 

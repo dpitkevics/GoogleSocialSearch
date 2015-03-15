@@ -2,6 +2,8 @@ import requests
 import json
 from urllib.parse import quote
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from GoogleSocialSearch import settings
 
 from Search import models
@@ -30,6 +32,16 @@ def do_search(query, start=1):
 
     real_start = start - low_range
 
+    try:
+        request = models.Request.objects.get(search_terms=query, start_index=real_start)
+        request.requested()
+
+        search_result = request.searchresult
+
+        return search_result
+    except ObjectDoesNotExist:
+        pass
+
     request_url = "https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s&start=%d&lowRange=%d&highRange=%d" % (
         settings.API_KEY,
         settings.API_SEARCH_CX,
@@ -44,6 +56,7 @@ def do_search(query, start=1):
     search_results = json.loads(data.text)
 
     if 'error' in search_results:
+        print("Error Happened:")
         print(search_results)
         return None
 
