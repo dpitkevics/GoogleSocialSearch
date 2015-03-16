@@ -43,7 +43,7 @@ def index(request):
     return render(request, 'Search/index.html', context)
 
 
-def open_link(request):
+def open_link(request, url):
     pass
 
 

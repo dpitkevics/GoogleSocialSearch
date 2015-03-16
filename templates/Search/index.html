@@ -8,7 +8,6 @@
 {% block title %}{% title search_result.search_terms %}{% endblock %}
 
 {% block content %}
-    {% url 'Search:open' url=123 %}
     <div class="row">
         <div class="col-md-6 col-sm-12 col-md-offset-3">
             <form action="{% url 'Search:index' %}" method="get" id="search-form">
@@ -29,7 +28,7 @@
                                     <div class="col-md-12 col-sm-12">
                                         <h4>
                                             {% settings_context "LINKS_NEW_WINDOW" as LINKS_NEW_WINDOW %}
-                                            <a href="{{ item.link }}" {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
+                                            <a href="{% url 'Search:open' url=item.pk %}" {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
                                                 {% if LINKS_NEW_WINDOW == True %}
                                                     <i class="glyphicon glyphicon-new-window new-window-icon"></i>
                                                 {% endif %}
