@@ -23,7 +23,7 @@ def index(request):
         search_result = search.do_search(request.GET['query'], search_offset)
 
         if search_result is not None:
-            total_search_results = min(int(search_result.search_information.total_results), search.MAX_TOTAL_LOAD)
+            total_search_results = min(int(search_result.total_results), search.MAX_TOTAL_LOAD)
 
             pagination = Pagination(request, total_search_results, current_page)
         else:
@@ -41,6 +41,10 @@ def index(request):
     }
 
     return render(request, 'Search/index.html', context)
+
+
+def open_link(request):
+    pass
 
 
 def suggestion(request):

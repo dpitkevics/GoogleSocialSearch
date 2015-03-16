@@ -21,7 +21,7 @@ def do_search(query, start=1):
     Executes search and returns formatted objects
 
     :param query: string
-    :return: SearchResult
+    :return: models.SearchRequest
     """
 
     if start > MAX_TOTAL_LOAD:
@@ -33,12 +33,9 @@ def do_search(query, start=1):
     real_start = start - low_range
 
     try:
-        request = models.Request.objects.get(search_terms=query, start_index=real_start)
-        request.requested()
-
-        search_result = request.searchresult
-
-        return search_result
+        search_request = models.SearchRequest.objects.get(search_terms=query, start_index=real_start)
+        search_request.update_items_views()
+        return search_request
     except ObjectDoesNotExist:
         pass
 
@@ -60,7 +57,7 @@ def do_search(query, start=1):
         print(search_results)
         return None
 
-    search_information = models.SearchInformation()
+    search_information = SearchInformation()
 
     if 'searchInformation' in search_results:
         search_information.search_time = search_results['searchInformation']['searchTime']
@@ -68,10 +65,8 @@ def do_search(query, start=1):
         search_information.total_results = int(search_results['searchInformation']['totalResults'].replace(',', ''))
         search_information.formatted_total_results = int(search_results['searchInformation']['formattedTotalResults'].replace(',', ''))
 
-        search_information.save()
-
-    request = models.Request()
-    next_page = models.NextPage()
+    request = Request()
+    next_page = NextPage()
     if 'queries' in search_results:
         if 'request' in search_results['queries']:
             request.title = search_results['queries']['request'][0]['title']
@@ -84,8 +79,6 @@ def do_search(query, start=1):
             request.safe = search_results['queries']['request'][0]['safe']
             request.cx = search_results['queries']['request'][0]['cx']
 
-            request.save()
-
         if 'nextPage' in search_results['queries']:
             next_page.title = search_results['queries']['nextPage'][0]['title']
             next_page.total_results = search_results['queries']['nextPage'][0]['totalResults']
@@ -97,38 +90,43 @@ def do_search(query, start=1):
             next_page.safe = search_results['queries']['nextPage'][0]['safe']
             next_page.cx = search_results['queries']['nextPage'][0]['cx']
 
-            next_page.save()
-
-    search_result = models.SearchResult()
+    search_result = SearchResult()
     search_result.search_information = search_information
     search_result.request = request
     search_result.next_page = next_page
 
-    search_result.save()
+    search_request = models.SearchRequest()
+    search_request.search_time = search_information.search_time
+    search_request.total_results = search_information.total_results
+    search_request.title = request.title
+    search_request.search_terms = request.search_terms
+    search_request.start_index = request.start_index
+    search_request.input_encoding = request.input_encoding
+    search_request.output_encoding = request.output_encoding
+    search_request.safe = request.safe
+    search_request.cx = request.cx
+
+    search_request.save()
 
     if 'items' in search_results:
         for item in search_results['items']:
             if 'pagemap' in item:
                 if 'cse_image' in item['pagemap']:
-                    cse_image = models.CseImage()
+                    cse_image = CseImage()
                     cse_image.src = item['pagemap']['cse_image'][0]['src']
-
-                    cse_image.save()
                 else:
                     cse_image = None
 
                 if 'cse_thumbnail' in item['pagemap']:
-                    cse_thumbnail = models.CseThumbnail()
+                    cse_thumbnail = CseThumbnail()
                     cse_thumbnail.width = item['pagemap']['cse_thumbnail'][0]['width']
                     cse_thumbnail.height = item['pagemap']['cse_thumbnail'][0]['height']
                     cse_thumbnail.src = item['pagemap']['cse_thumbnail'][0]['src']
-
-                    cse_thumbnail.save()
                 else:
                     cse_thumbnail = None
 
                 if 'metatags' in item['pagemap']:
-                    metatags = models.Metatag()
+                    metatags = Metatags()
 
                     if 'referrer' in item['pagemap']['metatags'][0]:
                         metatags.referrer = item['pagemap']['metatags'][0]['referrer']
@@ -147,8 +145,6 @@ def do_search(query, start=1):
 
                     if 'og:locale:alternate' in item['pagemap']['metatags'][0]:
                         metatags.locale_alternate = item['pagemap']['metatags'][0]['og:locale:alternate']
-
-                    metatags.save()
                 else:
                     metatags = None
             else:
@@ -156,14 +152,12 @@ def do_search(query, start=1):
                 cse_thumbnail = None
                 metatags = None
 
-            pagemap = models.Pagemap()
+            pagemap = Pagemap()
             pagemap.cse_image = cse_image
             pagemap.cse_thumbnail = cse_thumbnail
             pagemap.metatag = metatags
 
-            pagemap.save()
-
-            search_item = models.Item()
+            search_item = Item()
             if 'kind' in item:
                 search_item.kind = item['kind']
 
@@ -197,187 +191,204 @@ def do_search(query, start=1):
             search_item.pagemap = pagemap
             search_item.search_result = search_result
 
-            search_item.save()
+            try:
+                result_item = models.SearchItem.objects.get(link=search_item.link)
+                result_item.add_view()
+            except ObjectDoesNotExist:
+                result_item = models.SearchItem()
+                result_item.kind = search_item.kind
+                result_item.title = search_item.title
+                result_item.html_title = search_item.html_title
+                result_item.link = search_item.link
+                result_item.display_link = search_item.display_link
+                result_item.snippet = search_item.snippet
+                result_item.html_snippet = search_item.html_snippet
+                result_item.cache_id = search_item.cache_id
+                result_item.formatted_url = search_item.formatted_url
+                result_item.html_formatted_url = search_item.html_formatted_url
 
-            search_result.items.add(search_item)
+                result_item.save()
 
-    return search_result
+            search_request.searchitem_set.add(result_item)
+            search_request.save()
+
+    return search_request
 
 
-# class SearchResult(object):
-#     def __init__(self, search_information=None, request=None, next_page=None):
-#         """
-#         :param search_information: SearchInformation
-#         :param request: Request
-#         :param next_page: NextPage
-#         :return:
-#         """
-#
-#         self.search_information = search_information
-#         self.request = request
-#         self.next_page = next_page
-#         self.items = []
-#
-#     def __str__(self):
-#         return json.dumps(self, default=lambda o: o.__dict__,
-#                           sort_keys=True, indent=4)
-#
-#
-# class SearchInformation(object):
-#     def __init__(self, search_time=0, formatted_search_time=0, total_results=0, formatted_total_results=0):
-#         """
-#         :param search_time: integer
-#         :param formatted_search_time: integer
-#         :param total_results: integer
-#         :param formatted_total_results: integer
-#         :return:
-#         """
-#         self.search_time = search_time
-#         self.formatted_search_time = formatted_search_time
-#         self.total_results = total_results
-#         self.formatted_total_results = formatted_total_results
-#
-#
-# class Query(object):
-#     def __init__(self,
-#                  title='',
-#                  total_results=0,
-#                  search_terms='',
-#                  count=0,
-#                  start_index=1,
-#                  input_encoding='utf8',
-#                  output_encoding='utf8',
-#                  safe='off',
-#                  cx=''):
-#         """
-#         :param title: string
-#         :param total_results: integer
-#         :param search_terms: string
-#         :param count: integer
-#         :param start_index: integer
-#         :param input_encoding: string
-#         :param output_encoding: string
-#         :param safe: string
-#         :param cx: string
-#         :return:
-#         """
-#
-#         self.title = title
-#         self.total_results = total_results
-#         self.search_terms = search_terms
-#         self.count = count
-#         self.start_index = start_index
-#         self.input_encoding = input_encoding
-#         self.output_encoding = output_encoding
-#         self.safe = safe
-#         self.cx = cx
-#
-#
-# class Request(Query):
-#     pass
-#
-#
-# class NextPage(Query):
-#     pass
-#
-#
-# class Item(object):
-#     def __init__(self,
-#                  kind='',
-#                  title='',
-#                  html_title='',
-#                  link='',
-#                  display_link='',
-#                  snippet='',
-#                  html_snippet='',
-#                  cache_id='',
-#                  formatted_url='',
-#                  html_formatted_url='',
-#                  pagemap=None):
-#         """
-#         :param kind: string
-#         :param title: string
-#         :param html_title: string
-#         :param link: string
-#         :param display_link: string
-#         :param snippet: string
-#         :param html_snippet: string
-#         :param cache_id: string
-#         :param formatted_url: string
-#         :param html_formatted_url: string
-#         :param pagemap: Pagemap
-#         :return:
-#         """
-#
-#         self.kind = kind
-#         self.title = title
-#         self.html_title = html_title
-#         self.link = link
-#         self.display_link = display_link
-#         self.snippet = snippet
-#         self.html_snippet = html_snippet
-#         self.cache_id = cache_id
-#         self.formatted_url = formatted_url
-#         self.html_formatted_url = html_formatted_url
-#         self.pagemap = pagemap
-#
-#     def __str__(self):
-#         return self.title
-#
-#
-# class Pagemap(object):
-#     def __init__(self, cse_image=None, cse_thumbnail=None, metatags=None):
-#         """
-#         :param cse_image: CseImage
-#         :param cse_thumbnail: CseThumbnail
-#         :param metatags: Metatags
-#         :return:
-#         """
-#
-#         self.cse_image = cse_image
-#         self.cse_thumbnail = cse_thumbnail
-#         self.metatags = metatags
-#
-#
-# class CseImage(object):
-#     def __init__(self, src=''):
-#         """
-#         :param src: string
-#         :return:
-#         """
-#
-#         self.src = src
-#
-#
-# class CseThumbnail(object):
-#     def __init__(self, width=0, height=0, src=''):
-#         """
-#         :param width: integer
-#         :param height: integer
-#         :param src: string
-#         :return:
-#         """
-#
-#         self.width = width
-#         self.height = height
-#         self.src = src
-#
-#
-# class Metatags(object):
-#     def __init__(self, referrer='', site_name='', url='', image='', locale='', locale_alternate=''):
-#         """
-#         :param referrer: string
-#         :param site_name: string
-#         :param url: string
-#         :param image: string
-#         :param locale: string
-#         :param locale_alternate: string
-#         :return:
-#         """
-#
-#         self.referrer = referrer
-#         self.site_name = site_name
-#         self.url = url
-#         self.image = image
-#         self.locale = locale
-#         self.locale_alternate = locale_alternate
+class SearchResult(object):
+    def __init__(self, search_information=None, request=None, next_page=None):
+        """
+        :param search_information: SearchInformation
+        :param request: Request
+        :param next_page: NextPage
+        :return:
+        """
+
+        self.search_information = search_information
+        self.request = request
+        self.next_page = next_page
+        self.items = []
+
+    def __str__(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
+
+
+class SearchInformation(object):
+    def __init__(self, search_time=0, formatted_search_time=0, total_results=0, formatted_total_results=0):
+        """
+        :param search_time: integer
+        :param formatted_search_time: integer
+        :param total_results: integer
+        :param formatted_total_results: integer
+        :return:
+        """
+        self.search_time = search_time
+        self.formatted_search_time = formatted_search_time
+        self.total_results = total_results
+        self.formatted_total_results = formatted_total_results
+
+
+class Query(object):
+    def __init__(self,
+                 title='',
+                 total_results=0,
+                 search_terms='',
+                 count=0,
+                 start_index=1,
+                 input_encoding='utf8',
+                 output_encoding='utf8',
+                 safe='off',
+                 cx=''):
+        """
+        :param title: string
+        :param total_results: integer
+        :param search_terms: string
+        :param count: integer
+        :param start_index: integer
+        :param input_encoding: string
+        :param output_encoding: string
+        :param safe: string
+        :param cx: string
+        :return:
+        """
+
+        self.title = title
+        self.total_results = total_results
+        self.search_terms = search_terms
+        self.count = count
+        self.start_index = start_index
+        self.input_encoding = input_encoding
+        self.output_encoding = output_encoding
+        self.safe = safe
+        self.cx = cx
+
+
+class Request(Query):
+    pass
+
+
+class NextPage(Query):
+    pass
+
+
+class Item(object):
+    def __init__(self,
+                 kind='',
+                 title='',
+                 html_title='',
+                 link='',
+                 display_link='',
+                 snippet='',
+                 html_snippet='',
+                 cache_id='',
+                 formatted_url='',
+                 html_formatted_url='',
+                 pagemap=None):
+        """
+        :param kind: string
+        :param title: string
+        :param html_title: string
+        :param link: string
+        :param display_link: string
+        :param snippet: string
+        :param html_snippet: string
+        :param cache_id: string
+        :param formatted_url: string
+        :param html_formatted_url: string
+        :param pagemap: Pagemap
+        :return:
+        """
+
+        self.kind = kind
+        self.title = title
+        self.html_title = html_title
+        self.link = link
+        self.display_link = display_link
+        self.snippet = snippet
+        self.html_snippet = html_snippet
+        self.cache_id = cache_id
+        self.formatted_url = formatted_url
+        self.html_formatted_url = html_formatted_url
+        self.pagemap = pagemap
+
+    def __str__(self):
+        return self.title
+
+
+class Pagemap(object):
+    def __init__(self, cse_image=None, cse_thumbnail=None, metatags=None):
+        """
+        :param cse_image: CseImage
+        :param cse_thumbnail: CseThumbnail
+        :param metatags: Metatags
+        :return:
+        """
+
+        self.cse_image = cse_image
+        self.cse_thumbnail = cse_thumbnail
+        self.metatags = metatags
+
+
+class CseImage(object):
+    def __init__(self, src=''):
+        """
+        :param src: string
+        :return:
+        """
+
+        self.src = src
+
+
+class CseThumbnail(object):
+    def __init__(self, width=0, height=0, src=''):
+        """
+        :param width: integer
+        :param height: integer
+        :param src: string
+        :return:
+        """
+
+        self.width = width
+        self.height = height
+        self.src = src
+
+
+class Metatags(object):
+    def __init__(self, referrer='', site_name='', url='', image='', locale='', locale_alternate=''):
+        """
+        :param referrer: string
+        :param site_name: string
+        :param url: string
+        :param image: string
+        :param locale: string
+        :param locale_alternate: string
+        :return:
+        """
+
+        self.referrer = referrer
+        self.site_name = site_name
+        self.url = url
+        self.image = image
+        self.locale = locale
+        self.locale_alternate = locale_alternate
