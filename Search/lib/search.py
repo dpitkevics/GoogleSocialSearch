@@ -33,7 +33,7 @@ def do_search(query, start=1):
     real_start = start - low_range
 
     try:
-        search_request = models.SearchRequest.objects.get(search_terms=query, start_index=real_start)
+        search_request = models.SearchRequest.objects.get(search_terms=query, start_index=start)
         search_request.update_items_views()
         return search_request
     except ObjectDoesNotExist:
@@ -100,7 +100,7 @@ def do_search(query, start=1):
     search_request.total_results = search_information.total_results
     search_request.title = request.title
     search_request.search_terms = request.search_terms
-    search_request.start_index = request.start_index
+    search_request.start_index = start
     search_request.input_encoding = request.input_encoding
     search_request.output_encoding = request.output_encoding
     search_request.safe = request.safe

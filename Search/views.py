@@ -1,12 +1,16 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.http.response import HttpResponseRedirect
 
 import json
+from urllib.parse import unquote
 
 from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
+from Search.models import SearchItem
 
 
 def index(request):
@@ -44,7 +48,14 @@ def index(request):
 
 
 def open_link(request, url):
-    pass
+    try:
+        url = unquote(url)
+        search_item = SearchItem.objects.get(link=url)
+        search_item.add_click()
+
+        return HttpResponseRedirect(search_item.link)
+    except ObjectDoesNotExist:
+        return HttpResponse("Incorrect URL")
 
 
 def suggestion(request):

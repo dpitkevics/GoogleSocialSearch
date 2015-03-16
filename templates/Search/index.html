@@ -28,7 +28,7 @@
                                     <div class="col-md-12 col-sm-12">
                                         <h4>
                                             {% settings_context "LINKS_NEW_WINDOW" as LINKS_NEW_WINDOW %}
-                                            <a href="{% url 'Search:open' url=item.pk %}" {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
+                                            <a href="{% url 'Search:open' url=item.link|urlencode %}" {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
                                                 {% if LINKS_NEW_WINDOW == True %}
                                                     <i class="glyphicon glyphicon-new-window new-window-icon"></i>
                                                 {% endif %}
