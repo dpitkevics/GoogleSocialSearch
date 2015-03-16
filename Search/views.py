@@ -12,6 +12,8 @@ from Search.lib import suggestions
 from Search.lib.pagination import Pagination
 from Search.models import SearchItem
 
+from GoogleSocialSearch.lib.network import get_client_ip
+
 
 def index(request):
     if 'query' in request.GET:
@@ -24,7 +26,7 @@ def index(request):
 
         search_offset = 1 + ((current_page - 1) * 10)
 
-        search_result = search.do_search(request.GET['query'], search_offset)
+        search_result = search.do_search(request.GET['query'], search_offset, get_client_ip(request))
 
         if search_result is not None:
             total_search_results = min(int(search_result.total_results), search.MAX_TOTAL_LOAD)

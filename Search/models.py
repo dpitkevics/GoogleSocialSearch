@@ -11,6 +11,7 @@ class SearchRequest(models.Model):
     output_encoding = models.CharField(max_length=8, default='utf8')
     safe = models.CharField(max_length=8, default='off')
     cx = models.CharField(max_length=256)
+    country_code = models.CharField(max_length=32, default='en')
 
     class Meta:
         db_table = 'search_requests'

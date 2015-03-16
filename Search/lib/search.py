@@ -1,8 +1,12 @@
 import requests
 import json
 from urllib.parse import quote
+import os
 
 from django.core.exceptions import ObjectDoesNotExist
+from GoogleSocialSearch.settings import BASE_DIR
+
+import pygeoip
 
 from GoogleSocialSearch import settings
 
@@ -15,14 +19,38 @@ MAX_TOTAL_LOAD = 1000
 
 LOAD_RANGE = 100
 
+GEOIP_DATABASE = os.path.join(BASE_DIR, 'data',  'GeoLiteCity.dat')
+GOOGLEHOST_DATABASE = os.path.join(BASE_DIR, 'data', 'GoogleHosts.json')
 
-def do_search(query, start=1):
+
+def do_search(query, start=1, ip=None):
     """
     Executes search and returns formatted objects
 
     :param query: string
     :return: models.SearchRequest
     """
+
+    if ip is not None:
+        if ip == '127.0.0.1':
+            ip = '84.245.208.36'
+
+        gi = pygeoip.GeoIP(GEOIP_DATABASE, pygeoip.STANDARD)
+        geo_data = gi.record_by_addr(ip)
+
+        country_code = geo_data['country_code']
+
+        json_data = open(GOOGLEHOST_DATABASE)
+        data = json.load(json_data)
+
+        google_host = 'google.%s' % country_code.lower()
+        if google_host not in data:
+            google_host = 'google.com'
+
+        json_data.close()
+    else:
+        country_code = 'en'
+        google_host = 'google.com'
 
     if start > MAX_TOTAL_LOAD:
         start = MAX_TOTAL_LOAD
@@ -33,19 +61,21 @@ def do_search(query, start=1):
     real_start = start - low_range
 
     try:
-        search_request = models.SearchRequest.objects.get(search_terms=query, start_index=start)
+        search_request = models.SearchRequest.objects.get(search_terms=query, start_index=start, country_code=country_code)
         search_request.update_items_views()
         return search_request
     except ObjectDoesNotExist:
         pass
 
-    request_url = "https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s&start=%d&lowRange=%d&highRange=%d" % (
+    request_url = "https://www.googleapis.com/customsearch/v1?key=%s&cx=%s&q=%s&start=%d&lowRange=%d&highRange=%d&gl=%s&googlehost=%s" % (
         settings.API_KEY,
         settings.API_SEARCH_CX,
         quote(query),
         real_start,
         low_range,
-        high_range
+        high_range,
+        country_code,
+        google_host
     )
 
     data = requests.get(request_url)
@@ -105,6 +135,7 @@ def do_search(query, start=1):
     search_request.output_encoding = request.output_encoding
     search_request.safe = request.safe
     search_request.cx = request.cx
+    search_request.country_code = country_code
 
     search_request.save()
 
