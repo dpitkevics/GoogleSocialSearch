@@ -18,6 +18,19 @@ from GoogleSocialSearch.lib.network import get_client_ip
 def index(request):
     if 'query' in request.GET:
         form = SearchForm(request.GET)
+    else:
+        form = SearchForm()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'Search/index.html', context)
+
+
+def load_search(request):
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
 
         if 'p' in request.GET:
             current_page = int(request.GET['p'])
@@ -46,7 +59,7 @@ def index(request):
         'pagination': pagination
     }
 
-    return render(request, 'Search/index.html', context)
+    return render(request, 'Search/load_search.html', context)
 
 
 def open_link(request, url):

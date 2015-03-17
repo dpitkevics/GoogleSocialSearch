@@ -10,6 +10,7 @@
     <title>{% block title %}{% settings_value "SITE_NAME" %}{% endblock %}</title>
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/loadingbar.css' %}" />
 
     {% block bootstrap_theme %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme-used.css' %}" />
@@ -75,12 +76,13 @@
         </div><!-- /.container-fluid -->
     </nav>
 
-    <div class="container-fluid">
+    <div class="container-fluid" id="content">
         {% block content %}{% endblock %}
     </div>
 
     <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.loadingbar.js' %}"></script>
 
     {% block javascripts %}{% endblock %}
 </body>
