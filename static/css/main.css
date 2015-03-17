@@ -27,3 +27,17 @@ ul.typeahead.dropdown-menu a {
 ul.typeahead.dropdown-menu a strong {
     color: #5bc0de;
 }
+
+.profile-image {
+    float: left;
+}
+
+.profile-image > img {
+    max-height: 40px;
+}
+
+.profile-header {
+    float: left;
+    padding-top: 12px;
+    margin-left: 10px;
+}

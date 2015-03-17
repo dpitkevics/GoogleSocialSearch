@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load settings %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html>
@@ -32,45 +33,36 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><img alt="Brand" src="https://openclipart.org/image/800px/svg_to_png/202320/air-travel.png"></a>
+                <a class="navbar-brand" href="{% url 'Search:index' %}"><img alt="Brand" src="{% static 'images/social-search.png' %}"></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </li>
+                    {% if user and not user.is_anonymous %}
+                        <li>
+                            <div class="profile-image">
+                                <img src="{{ request.user.profile.get.photo }}" />
+                            </div>
+                            <div class="profile-header">
+                                {{ user.get_full_name|default:user.username }}
+                            </div>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth:logout' %}?next={{ request.path }}"><i class="glyphicon glyphicon-off"></i> {% trans "Logout" %}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">{% trans "Login with Facebook" %}</a>
+                        </li>
+{#                        <li>#}
+{#                            <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with#}
+{#                                Google</a>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                            <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>#}
+{#                        </li>#}
+                    {% endif %}
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -83,6 +75,27 @@
     <script src="{% static 'js/jquery-1.11.2.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/jquery.loadingbar.js' %}"></script>
+
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '1549018752028891',
+                xfbml: true,
+                version: 'v2.2'
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
 
     {% block javascripts %}{% endblock %}
 </body>

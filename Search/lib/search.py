@@ -23,7 +23,7 @@ GEOIP_DATABASE = os.path.join(BASE_DIR, 'data',  'GeoLiteCity.dat')
 GOOGLEHOST_DATABASE = os.path.join(BASE_DIR, 'data', 'GoogleHosts.json')
 
 
-def do_search(query, start=1, ip=None):
+def do_search(query, start=1, ip=None, user=None):
     """
     Executes search and returns formatted objects
 
@@ -63,6 +63,17 @@ def do_search(query, start=1, ip=None):
     try:
         search_request = models.SearchRequest.objects.get(search_terms=query, start_index=start, country_code=country_code)
         search_request.update_items_views()
+
+        if user is not None:
+            try:
+                user_search_request = models.UserSearchRequest.objects.get(search_request=search_request, user=user)
+                user_search_request.add_search()
+            except ObjectDoesNotExist:
+                user_search_request = models.UserSearchRequest()
+                user_search_request.search_request = search_request
+                user_search_request.user = user
+                user_search_request.save()
+
         return search_request
     except ObjectDoesNotExist:
         pass
@@ -138,6 +149,12 @@ def do_search(query, start=1, ip=None):
     search_request.country_code = country_code
 
     search_request.save()
+
+    if user is not None:
+        user_search_request = models.UserSearchRequest()
+        user_search_request.search_request = search_request
+        user_search_request.user = user
+        user_search_request.save()
 
     if 'items' in search_results:
         for item in search_results['items']:

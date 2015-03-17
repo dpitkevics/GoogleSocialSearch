@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class SearchRequest(models.Model):
@@ -19,6 +20,19 @@ class SearchRequest(models.Model):
     def update_items_views(self):
         for search_item in self.searchitem_set.all():
             search_item.add_view()
+
+
+class UserSearchRequest(models.Model):
+    search_request = models.ForeignKey(SearchRequest)
+    user = models.ForeignKey(User)
+    search_count = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'user_search_requests'
+
+    def add_search(self):
+        self.search_count += 1
+        self.save()
 
 
 class SearchItem(models.Model):

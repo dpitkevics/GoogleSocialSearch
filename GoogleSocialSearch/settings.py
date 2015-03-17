@@ -31,6 +31,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_PROFILE_MODULE = 'User.UserProfile'
+
 
 # Application definition
 
@@ -41,8 +43,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
     'GoogleSocialSearch',
     'Search',
+    'User'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -64,6 +68,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
 
 ROOT_URLCONF = 'GoogleSocialSearch.urls'
@@ -115,3 +121,36 @@ TEMPLATE_DIRS = (
 # Google Api Configuration
 API_KEY = 'AIzaSyBrM670Tag_vNzs7Ld66Cev43wbVbmd0DU'
 API_SEARCH_CX = '011767239663903188113:jx6ffcypnqs'
+
+# Social Auth Configuration
+AUTHENTICATION_BACKENDS = (
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.linkedin.LinkedinOAuth',
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
+SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1549018752028891'
+SOCIAL_AUTH_FACEBOOK_SECRET = '2a146602e5681983538484a06d56d6ab'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.mail.mail_validation',
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.get_username',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+
+    'User.pipelines.update_user_social_data',
+)

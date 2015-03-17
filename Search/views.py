@@ -39,7 +39,12 @@ def load_search(request):
 
         search_offset = 1 + ((current_page - 1) * 10)
 
-        search_result = search.do_search(request.GET['query'], search_offset, get_client_ip(request))
+        if request.user.is_authenticated():
+            user = request.user
+        else:
+            user = None
+
+        search_result = search.do_search(request.GET['query'], search_offset, get_client_ip(request), user)
 
         if search_result is not None:
             total_search_results = min(int(search_result.total_results), search.MAX_TOTAL_LOAD)
