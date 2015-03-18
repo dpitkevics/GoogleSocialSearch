@@ -13,33 +13,7 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     {% for item in search_result.searchitem_set.all %}
-                        <div class="row search-result-item">
-                            <div class="col-md-4 col-sm-12">
-                                <div class="row">
-                                    <div class="col-md-12 col-sm-12">
-                                        <h4>
-                                            {% settings_context "LINKS_NEW_WINDOW" as LINKS_NEW_WINDOW %}
-                                            <a href="{% url 'Search:open' url=item.link|urlencode %}" {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
-                                                {% if LINKS_NEW_WINDOW == True %}
-                                                    <i class="glyphicon glyphicon-new-window new-window-icon"></i>
-                                                {% endif %}
-                                                {{ item }}
-                                            </a>
-                                        </h4>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12 col-sm-12">
-                                        {% trans 'Found in:' %} <span class="text-info">{{ item.formatted_url }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-8 col-sm-12 search-result-snippet">
-                                <p>{{ item.html_snippet|safe }}</p>
-                            </div>
-                        </div>
+                        {% include 'Search/includes/search_item.html' with item=item %}
                     {% endfor %}
                 </div>
             </div>
