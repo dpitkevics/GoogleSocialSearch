@@ -10,9 +10,12 @@ from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem
+from Search.models import SearchItem, SearchItemVoter
+
+from Comments.forms import CommentForm
 
 from GoogleSocialSearch.lib.network import get_client_ip
+from GoogleSocialSearch.lib.integer import num_decode
 
 
 def index(request):
@@ -29,6 +32,9 @@ def index(request):
 
 
 def load_search(request):
+    comment_form = CommentForm()
+    print(comment_form)
+
     if 'query' in request.GET:
         form = SearchForm(request.GET)
 
@@ -61,7 +67,8 @@ def load_search(request):
     context = {
         'form': form,
         'search_result': search_result,
-        'pagination': pagination
+        'pagination': pagination,
+        'comment_form': comment_form,
     }
 
     return render(request, 'Search/load_search.html', context)
@@ -83,3 +90,29 @@ def suggestion(request):
     suggestions_data = suggestions_data[1]
 
     return HttpResponse(json.dumps(suggestions_data), content_type='application/json')
+
+
+def vote(request):
+    try:
+        pk = num_decode(request.GET['srpk'])
+        search_item = SearchItem.objects.get(pk=pk)
+
+        try:
+            SearchItemVoter.objects.get(user=request.user, search_item=search_item)
+
+            return HttpResponse('You already have voted')
+        except ObjectDoesNotExist:
+            search_item_voter = SearchItemVoter()
+            search_item_voter.search_item = search_item
+            search_item_voter.user = request.user
+            search_item_voter.save()
+
+            if request.GET['type'] == 'upvote':
+                search_item.add_upvote()
+            elif request.GET['type'] == 'downvote':
+                search_item.add_downvote()
+
+            return HttpResponse('Vote Successful')
+    except ObjectDoesNotExist:
+        pass
+    return HttpResponse('')

@@ -46,7 +46,8 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'GoogleSocialSearch',
     'Search',
-    'User'
+    'User',
+    'Comments'
 )
 
 MIDDLEWARE_CLASSES = (

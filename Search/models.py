@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from Comments.models import Comment
+
 
 class SearchRequest(models.Model):
     search_time = models.FloatField(default=0)
@@ -49,6 +51,8 @@ class SearchItem(models.Model):
 
     view_count = models.IntegerField(default=1)
     click_count = models.IntegerField(default=0)
+    upvote_count = models.IntegerField(default=0)
+    downvote_count = models.IntegerField(default=0)
 
     search_request = models.ManyToManyField(SearchRequest)
 
@@ -65,3 +69,27 @@ class SearchItem(models.Model):
     def add_click(self):
         self.click_count += 1
         self.save()
+
+    def add_upvote(self):
+        self.upvote_count += 1
+        self.save()
+
+    def add_downvote(self):
+        self.downvote_count += 1
+        self.save()
+
+
+class SearchItemVoter(models.Model):
+    search_item = models.ForeignKey(SearchItem)
+    user = models.ForeignKey(User)
+
+    class Meta:
+        db_table = 'search_item_voters'
+
+
+class SearchItemComments(models.Model):
+    search_item = models.ForeignKey(SearchItem)
+    comment = models.ForeignKey(Comment)
+
+    class Meta:
+        db_table = 'search_item_comments'
