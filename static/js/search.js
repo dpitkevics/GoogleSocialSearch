@@ -22,3 +22,20 @@ $(function () {
         return false;
     });
 });
+
+function commentFormSubmit(form) {
+    $.ajax({
+        'url': form.attr('action'),
+        'type': 'post',
+        'data': form.serialize(),
+        'success': function (html) {
+            if (html.length > 0) {
+                var srpk = form.find('input[name="srpk"]').val();
+                $("#comment-list-" + srpk).html(html);
+                form.find('textarea[name="comment_text"]').val('');
+            }
+        }
+    });
+
+    return false;
+}

@@ -55,13 +55,37 @@
         <p>{{ item.html_snippet|safe }}</p>
     </div>
 
-    <div class="col-md-4 col-sm-12 search-result-social">
-        <div class="col-md-8 col-sm-12">
-            <form action="#" method="post">
-                {% csrf_token %}
-                {{ comment_form }}
-                <input type="submit" class="btn btn-success" value="{% trans "Comment" %}" />
-            </form>
+    <div class="col-md-4 col-sm-12">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h3>{% trans "Comments" %}</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12" id="comment-list-{{ item.pk|num_encode }}">
+                {% include 'Search/includes/comment_list.html' with item=item %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <a class="fake-btn" data-toggle="collapse" data-target="#collapsed-comment-{{ item.pk|num_encode }}" aria-expanded="false" aria-controls="collapsed-comment-{{ item.pk|num_encode }}">
+                    <i class="glyphicon glyphicon-plus"></i> {% trans "Add Comment" %}
+                </a>
+            </div>
+        </div>
+
+        <div class="row collapse" id="collapsed-comment-{{ item.pk|num_encode }}">
+            <div class="col-md-12 col-sm-12">
+                <form action="{% url 'Search:add_comment' %}" method="post" class="comment-form" onsubmit="return commentFormSubmit($(this));">
+                    {% csrf_token %}
+                    {{ comment_form }}
+
+                    <input type="hidden" name="srpk" value="{{ item.pk|num_encode }}" />
+                    <input type="submit" class="btn btn-success" value="{% trans "Comment" %}" />
+                </form>
+            </div>
         </div>
     </div>
 </div>

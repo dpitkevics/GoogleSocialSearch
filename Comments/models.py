@@ -12,14 +12,10 @@ COMMENT_MAX_LENGTH = getattr(settings, 'COMMENT_MAX_LENGTH', 3000)
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('user'),
                     blank=True, null=True, related_name="%(class)s_comments")
-    user_name = models.CharField(_("user's name"), max_length=50, blank=True)
-    user_email = models.EmailField(_("user's email address"), blank=True)
-    user_url = models.URLField(_("user's URL"), blank=True)
-
     comment = models.TextField(_('comment'), max_length=COMMENT_MAX_LENGTH)
 
     # Metadata about the comment
-    submit_date = models.DateTimeField(_('date/time submitted'), default=None)
+    submit_date = models.DateTimeField(_('date/time submitted'), default=None, auto_now_add=True)
     ip_address = models.GenericIPAddressField(_('IP address'), unpack_ipv4=True, blank=True, null=True)
     is_public = models.BooleanField(_('is public'), default=True,
                     help_text=_('Uncheck this box to make the comment effectively ' \
@@ -34,7 +30,7 @@ class Comment(models.Model):
 
     class Meta:
         db_table = 'comments'
-        ordering = ('submit_date',)
+        ordering = ('-submit_date',)
         permissions = [("can_moderate", "Can moderate comments")]
         verbose_name = _('comment')
         verbose_name_plural = _('comments')

@@ -5,13 +5,15 @@ from django.http.response import HttpResponseRedirect
 
 import json
 from urllib.parse import unquote
+import html
 
 from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments
 
+from Comments.models import Comment
 from Comments.forms import CommentForm
 
 from GoogleSocialSearch.lib.network import get_client_ip
@@ -136,4 +138,37 @@ def load_scores(request):
         return render(request, 'Search/includes/scores.html', context)
     except ObjectDoesNotExist:
         pass
+    return HttpResponse('')
+
+
+def add_comment(request):
+    if request.user.is_authenticated() and request.method == 'POST':
+        comment_text = request.POST['comment_text']
+        if len(comment_text) > 0:
+            pk = num_decode(request.POST['srpk'])
+
+            try:
+                search_item = SearchItem.objects.get(pk=pk)
+
+                comment = Comment()
+                comment.comment = html.escape(comment_text)
+                comment.ip_address = get_client_ip(request)
+                comment.is_public = True
+                comment.is_removed = False
+                comment.user = request.user
+                comment.save()
+
+                search_item_comment = SearchItemComments()
+                search_item_comment.comment = comment
+                search_item_comment.search_item = search_item
+                search_item_comment.save()
+
+                context = {
+                    'item': search_item
+                }
+
+                return render(request, 'Search/includes/comment_list.html', context)
+            except ObjectDoesNotExist:
+                pass
+
     return HttpResponse('')

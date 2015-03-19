@@ -53,3 +53,19 @@ ul.typeahead.dropdown-menu a strong {
 .btn.no-btn:active {
     box-shadow: none;
 }
+
+.fake-btn {
+    cursor: pointer;
+}
+
+.well-no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.carousel-control.right, .carousel-control.left {
+    background-image: none;
+}
+
+.comment-carousel {
+    margin-bottom: 10px;
+}

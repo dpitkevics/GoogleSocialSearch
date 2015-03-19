@@ -1,0 +1,29 @@
+{% load integers %}
+{% load i18n %}
+
+{% if item.comments.all|length > 0 %}
+    <div id="carousel-comments-{{ item.pk|num_encode }}" class="carousel slide comment-carousel" data-ride="carousel">
+        <!-- Indicators -->
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            {% for item_comment in item.comments.all %}
+                <div class="item {% if forloop.counter == 1 %}active{% endif %}">
+                    {% include 'Search/includes/comment.html' with item_comment=item_comment %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-comments-{{ item.pk|num_encode }}" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-comments-{{ item.pk|num_encode }}" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+{% else %}
+    <p>{% trans "Be first to comment this search result!" %}</p>
+{% endif %}

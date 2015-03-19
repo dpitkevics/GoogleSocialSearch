@@ -1,0 +1,29 @@
+<div class="well well-sm well-no-margin-bottom">
+    <div class="row">
+        <div class="col-md-2 col-sm-6">
+            <span class="thumbnail">
+                <img src="{{ item_comment.comment.user.profile.get.photo }}" alt="{{ item_comment.comment.user }}" />
+            </span>
+        </div>
+
+        <div class="col-md-10 col-sm-6">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    {{ item_comment.comment.user }}
+                </div>
+
+                <div class="col-md-6 col-sm-12">
+                    {{ item_comment.comment.submit_date|date:"M d, Y H:i" }}
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    {{ item_comment.comment.comment }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

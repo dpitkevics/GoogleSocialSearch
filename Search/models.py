@@ -94,8 +94,10 @@ class SearchItemVoter(models.Model):
 
 
 class SearchItemComments(models.Model):
-    search_item = models.ForeignKey(SearchItem)
+    search_item = models.ForeignKey(SearchItem, related_name='comments')
     comment = models.ForeignKey(Comment)
+    submit_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'search_item_comments'
+        ordering = ('-submit_date',)
