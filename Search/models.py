@@ -78,6 +78,12 @@ class SearchItem(models.Model):
         self.downvote_count += 1
         self.save()
 
+    def get_vote_score(self):
+        return self.upvote_count - self.downvote_count
+
+    def get_score(self):
+        return self.get_vote_score() + self.click_count + self.view_count
+
 
 class SearchItemVoter(models.Model):
     search_item = models.ForeignKey(SearchItem)

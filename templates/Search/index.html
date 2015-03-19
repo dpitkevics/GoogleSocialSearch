@@ -76,6 +76,7 @@
                     },
                     'success': function (html) {
                         $("#search-results").html(html);
+                        $('.tooltip-btn').tooltip();
 
                         clearInterval(interval);
                         NProgress.done();

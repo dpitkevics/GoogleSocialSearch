@@ -7,6 +7,9 @@ register = template.Library()
 
 @register.filter(name='can_vote')
 def can_vote(search_item, user):
+    if not user.is_authenticated():
+        return False
+
     try:
         SearchItemVoter.objects.get(search_item=search_item, user=user)
 

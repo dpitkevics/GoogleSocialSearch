@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^suggestion/$', views.suggestion, name='suggestion'),
     url(r'^open/(?P<url>.+)/$', views.open_link, name='open'),
     url(r'^vote/$', views.vote, name='vote'),
+    url(r'^score/$', views.load_scores, name='scores'),
 )

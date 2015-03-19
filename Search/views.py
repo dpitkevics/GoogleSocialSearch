@@ -33,7 +33,6 @@ def index(request):
 
 def load_search(request):
     comment_form = CommentForm()
-    print(comment_form)
 
     if 'query' in request.GET:
         form = SearchForm(request.GET)
@@ -93,6 +92,9 @@ def suggestion(request):
 
 
 def vote(request):
+    if not request.user.is_authenticated():
+        return HttpResponse('')
+
     try:
         pk = num_decode(request.GET['srpk'])
         search_item = SearchItem.objects.get(pk=pk)
@@ -100,7 +102,7 @@ def vote(request):
         try:
             SearchItemVoter.objects.get(user=request.user, search_item=search_item)
 
-            return HttpResponse('You already have voted')
+            return HttpResponse('')
         except ObjectDoesNotExist:
             search_item_voter = SearchItemVoter()
             search_item_voter.search_item = search_item
@@ -112,7 +114,26 @@ def vote(request):
             elif request.GET['type'] == 'downvote':
                 search_item.add_downvote()
 
-            return HttpResponse('Vote Successful')
+            context = {
+                'item': search_item
+            }
+
+            return render(request, 'Search/includes/scores.html', context)
+    except ObjectDoesNotExist:
+        pass
+    return HttpResponse('')
+
+
+def load_scores(request):
+    try:
+        pk = num_decode(request.GET['srpk'])
+        search_item = SearchItem.objects.get(pk=pk)
+
+        context = {
+            'item': search_item
+        }
+
+        return render(request, 'Search/includes/scores.html', context)
     except ObjectDoesNotExist:
         pass
     return HttpResponse('')

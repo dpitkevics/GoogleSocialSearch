@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load integers %}
+
+<div class="btn btn-success tooltip-btn" data-toggle="collapse" data-placement="right" title="{% trans "Expand" %}" data-target="#collapsed-scores-{{ item.pk|num_encode }}" aria-expanded="false" aria-controls="collapsed-scores-{{ item.pk|num_encode }}">
+    Score
+    <span class="badge">{{ item.get_score }}</span>
+</div>
+
+<div class="collapse" id="collapsed-scores-{{ item.pk|num_encode }}">
+    <div class="btn-group-vertical" role="group" aria-label="">
+        <div class="btn btn-info no-btn">
+            Votes
+            <span class="badge">{{ item.get_vote_score }}</span>
+        </div>
+
+        <div class="btn btn-default no-btn">
+            Views
+            <span class="badge">{{ item.view_count }}</span>
+        </div>
+
+        <div class="btn btn-warning no-btn">
+            Clicks
+            <span class="badge">{{ item.click_count }}</span>
+        </div>
+    </div>
+</div>
