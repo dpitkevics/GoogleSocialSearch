@@ -101,3 +101,16 @@ class SearchItemComments(models.Model):
     class Meta:
         db_table = 'search_item_comments'
         ordering = ('-submit_date',)
+
+
+class SearchItemClick(models.Model):
+    search_item = models.ForeignKey(SearchItem)
+    user = models.ForeignKey(User)
+    click_count = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = 'search_item_clicks'
+
+    def add_click(self):
+        self.click_count += 1
+        self.save()

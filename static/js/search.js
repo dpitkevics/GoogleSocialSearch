@@ -21,6 +21,15 @@ $(function () {
 
         return false;
     });
+
+    $('body').on('click', '.comment-add', function () {
+        var icon = $(this).find('i');
+        if (icon.hasClass('glyphicon-plus')) {
+            icon.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        } else {
+            icon.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+        }
+    });
 });
 
 function commentFormSubmit(form) {
@@ -38,4 +47,8 @@ function commentFormSubmit(form) {
     });
 
     return false;
+}
+
+function makeHref(anchor) {
+    anchor.attr('href', anchor.data('href'));
 }

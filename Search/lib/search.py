@@ -65,14 +65,7 @@ def do_search(query, start=1, ip=None, user=None):
         search_request.update_items_views()
 
         if user is not None:
-            try:
-                user_search_request = models.UserSearchRequest.objects.get(search_request=search_request, user=user)
-                user_search_request.add_search()
-            except ObjectDoesNotExist:
-                user_search_request = models.UserSearchRequest()
-                user_search_request.search_request = search_request
-                user_search_request.user = user
-                user_search_request.save()
+            update_user(search_request, user)
 
         return search_request
     except ObjectDoesNotExist:
@@ -151,10 +144,7 @@ def do_search(query, start=1, ip=None, user=None):
     search_request.save()
 
     if user is not None:
-        user_search_request = models.UserSearchRequest()
-        user_search_request.search_request = search_request
-        user_search_request.user = user
-        user_search_request.save()
+        update_user(search_request, user)
 
     if 'items' in search_results:
         for item in search_results['items']:
@@ -261,6 +251,20 @@ def do_search(query, start=1, ip=None, user=None):
             search_request.save()
 
     return search_request
+
+
+def update_user(search_request, user):
+    try:
+        user_search_request = models.UserSearchRequest.objects.get(search_request=search_request, user=user)
+        user_search_request.add_search()
+    except ObjectDoesNotExist:
+        user_search_request = models.UserSearchRequest()
+        user_search_request.search_request = search_request
+        user_search_request.user = user
+        user_search_request.save()
+
+        profile = user.profile.get()
+        profile.add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_VIEW)
 
 
 class SearchResult(object):

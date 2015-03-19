@@ -11,13 +11,14 @@ from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick
 
 from Comments.models import Comment
 from Comments.forms import CommentForm
 
 from GoogleSocialSearch.lib.network import get_client_ip
 from GoogleSocialSearch.lib.integer import num_decode
+from GoogleSocialSearch import settings
 
 
 def index(request):
@@ -81,6 +82,18 @@ def open_link(request, url):
         search_item = SearchItem.objects.get(link=url)
         search_item.add_click()
 
+        if request.user.is_authenticated():
+            try:
+                search_item_click = SearchItemClick.objects.get(search_item=search_item, user=request.user)
+                search_item_click.add_click()
+            except ObjectDoesNotExist:
+                search_item_click = SearchItemClick()
+                search_item_click.search_item = search_item
+                search_item_click.user = request.user
+                search_item_click.save()
+
+                request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_CLICK)
+
         return HttpResponseRedirect(search_item.link)
     except ObjectDoesNotExist:
         return HttpResponse("Incorrect URL")
@@ -115,6 +128,8 @@ def vote(request):
                 search_item.add_upvote()
             elif request.GET['type'] == 'downvote':
                 search_item.add_downvote()
+
+            request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_VOTE)
 
             context = {
                 'item': search_item
@@ -162,6 +177,8 @@ def add_comment(request):
                 search_item_comment.comment = comment
                 search_item_comment.search_item = search_item
                 search_item_comment.save()
+
+                request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_COMMENT)
 
                 context = {
                     'item': search_item

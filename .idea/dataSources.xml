@@ -5,7 +5,10 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1/google_social_search</jdbc-url>
+      <user-name>google_social_search</user-name>
+      <user-password>dfcddfc3dfd8dfc0dfcddfc5dfc3dfc2dfd8dfdfdfcfdfc2df9ddfdddfd3df99df9e</user-password>
       <libraries />
     </data-source>
   </component>
 </project>
+

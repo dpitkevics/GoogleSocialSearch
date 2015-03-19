@@ -33,7 +33,7 @@
             <div class="col-md-12 col-sm-12">
                 <h4>
                     {% settings_context "LINKS_NEW_WINDOW" as LINKS_NEW_WINDOW %}
-                    <a href="{% url 'Search:open' url=item.link|urlencode %}"
+                    <a href="{{ item.link }}" data-href="{% url 'Search:open' url=item.link|urlencode %}" onmousedown="makeHref($(this));"
                        {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
                         {% if LINKS_NEW_WINDOW == True %}
                             <i class="glyphicon glyphicon-new-window new-window-icon"></i>
@@ -68,24 +68,28 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <a class="fake-btn" data-toggle="collapse" data-target="#collapsed-comment-{{ item.pk|num_encode }}" aria-expanded="false" aria-controls="collapsed-comment-{{ item.pk|num_encode }}">
-                    <i class="glyphicon glyphicon-plus"></i> {% trans "Add Comment" %}
-                </a>
-            </div>
-        </div>
+        {% if request.user.is_authenticated %}
 
-        <div class="row collapse" id="collapsed-comment-{{ item.pk|num_encode }}">
-            <div class="col-md-12 col-sm-12">
-                <form action="{% url 'Search:add_comment' %}" method="post" class="comment-form" onsubmit="return commentFormSubmit($(this));">
-                    {% csrf_token %}
-                    {{ comment_form }}
-
-                    <input type="hidden" name="srpk" value="{{ item.pk|num_encode }}" />
-                    <input type="submit" class="btn btn-success" value="{% trans "Comment" %}" />
-                </form>
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <a class="fake-btn comment-add" data-toggle="collapse" data-target="#collapsed-comment-{{ item.pk|num_encode }}" aria-expanded="false" aria-controls="collapsed-comment-{{ item.pk|num_encode }}">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans "Add Comment" %}
+                    </a>
+                </div>
             </div>
-        </div>
+
+            <div class="row collapse" id="collapsed-comment-{{ item.pk|num_encode }}">
+                <div class="col-md-12 col-sm-12">
+                    <form action="{% url 'Search:add_comment' %}" method="post" class="comment-form" onsubmit="return commentFormSubmit($(this));">
+                        {% csrf_token %}
+                        {{ comment_form }}
+
+                        <input type="hidden" name="srpk" value="{{ item.pk|num_encode }}" />
+                        <input type="submit" class="btn btn-success" value="{% trans "Comment" %}" />
+                    </form>
+                </div>
+            </div>
+
+        {% endif %}
     </div>
 </div>
