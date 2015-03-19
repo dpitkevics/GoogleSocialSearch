@@ -1,5 +1,7 @@
 $(function () {
-    $('body').on('click', '.vote-link', function () {
+    var body = $('body');
+
+    body.on('click', '.vote-link', function () {
         var button = $(this);
         var url = button.attr('href');
 
@@ -22,7 +24,7 @@ $(function () {
         return false;
     });
 
-    $('body').on('click', '.comment-add', function () {
+    body.on('click', '.comment-add', function () {
         var icon = $(this).find('i');
         if (icon.hasClass('glyphicon-plus')) {
             icon.removeClass('glyphicon-plus').addClass('glyphicon-minus');
