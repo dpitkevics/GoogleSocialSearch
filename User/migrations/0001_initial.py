@@ -15,8 +15,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('photo', models.TextField()),
+                ('experience', models.FloatField(default=0)),
+                ('balance', models.FloatField(default=0)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='profile', unique=True)),
             ],
             options={

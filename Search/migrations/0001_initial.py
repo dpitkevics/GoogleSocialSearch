@@ -2,40 +2,19 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('Comments', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CseImage',
-            fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('src', models.CharField(max_length=512)),
-            ],
-            options={
-                'db_table': 'cse_images',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='CseThumbnail',
-            fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('width', models.FloatField(default=0)),
-                ('height', models.FloatField(default=0)),
-                ('src', models.CharField(max_length=512)),
-            ],
-            options={
-                'db_table': 'cse_thumbnails',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='Item',
+            name='SearchItem',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('kind', models.CharField(max_length=256)),
@@ -48,117 +27,92 @@ class Migration(migrations.Migration):
                 ('cache_id', models.CharField(max_length=256)),
                 ('formatted_url', models.CharField(max_length=256)),
                 ('html_formatted_url', models.CharField(max_length=256)),
+                ('view_count', models.IntegerField(default=1)),
+                ('click_count', models.IntegerField(default=0)),
+                ('upvote_count', models.IntegerField(default=0)),
+                ('downvote_count', models.IntegerField(default=0)),
             ],
             options={
-                'db_table': 'items',
+                'db_table': 'search_items',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Metatag',
+            name='SearchItemClick',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('referrer', models.CharField(max_length=256)),
-                ('site_name', models.CharField(max_length=256)),
-                ('url', models.URLField(max_length=512)),
-                ('image', models.CharField(max_length=512)),
-                ('locale', models.CharField(max_length=256)),
-                ('locale_alternate', models.CharField(max_length=256)),
+                ('click_count', models.IntegerField(default=0)),
+                ('search_item', models.ForeignKey(to='Search.SearchItem')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'db_table': 'metatags',
+                'db_table': 'search_item_clicks',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='NextPage',
+            name='SearchItemComments',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('title', models.CharField(max_length=256)),
-                ('total_results', models.IntegerField(default=0)),
-                ('search_terms', models.CharField(max_length=512)),
-                ('count', models.IntegerField(default=0)),
-                ('start_index', models.IntegerField(default=1)),
-                ('input_encoding', models.CharField(default='utf8', max_length=8)),
-                ('output_encoding', models.CharField(default='utf8', max_length=8)),
-                ('safe', models.CharField(default='off', max_length=8)),
-                ('cx', models.CharField(max_length=256)),
+                ('submit_date', models.DateTimeField(auto_now_add=True)),
+                ('comment', models.ForeignKey(to='Comments.Comment')),
+                ('search_item', models.ForeignKey(to='Search.SearchItem', related_name='comments')),
             ],
             options={
-                'db_table': 'next_pages',
+                'db_table': 'search_item_comments',
+                'ordering': ('-submit_date',),
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Pagemap',
+            name='SearchItemVoter',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('cse_image', models.ForeignKey(to='Search.CseImage', null=True)),
-                ('cse_thumbnail', models.ForeignKey(to='Search.CseThumbnail', null=True)),
-                ('metatag', models.ForeignKey(to='Search.Metatag', null=True)),
+                ('search_item', models.ForeignKey(to='Search.SearchItem')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'db_table': 'pagemaps',
+                'db_table': 'search_item_voters',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Request',
-            fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('title', models.CharField(max_length=256)),
-                ('total_results', models.IntegerField(default=0)),
-                ('search_terms', models.CharField(max_length=512)),
-                ('count', models.IntegerField(default=0)),
-                ('start_index', models.IntegerField(default=1)),
-                ('input_encoding', models.CharField(default='utf8', max_length=8)),
-                ('output_encoding', models.CharField(default='utf8', max_length=8)),
-                ('safe', models.CharField(default='off', max_length=8)),
-                ('cx', models.CharField(max_length=256)),
-                ('request_count', models.IntegerField(default=1)),
-            ],
-            options={
-                'db_table': 'requests',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='SearchInformation',
+            name='SearchRequest',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('search_time', models.FloatField(default=0)),
-                ('formatted_search_time', models.FloatField(default=0)),
                 ('total_results', models.BigIntegerField(default=0)),
-                ('formatted_total_results', models.BigIntegerField(default=0)),
+                ('title', models.CharField(max_length=256)),
+                ('search_terms', models.CharField(max_length=512)),
+                ('start_index', models.IntegerField(default=1)),
+                ('input_encoding', models.CharField(max_length=8, default='utf8')),
+                ('output_encoding', models.CharField(max_length=8, default='utf8')),
+                ('safe', models.CharField(max_length=8, default='off')),
+                ('cx', models.CharField(max_length=256)),
+                ('country_code', models.CharField(max_length=32, default='en')),
             ],
             options={
-                'db_table': 'search_informations',
+                'db_table': 'search_requests',
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='SearchResult',
+            name='UserSearchRequest',
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
-                ('next_page', models.OneToOneField(to='Search.NextPage', null=True)),
-                ('request', models.OneToOneField(to='Search.Request')),
-                ('search_information', models.OneToOneField(to='Search.SearchInformation')),
+                ('search_count', models.IntegerField(default=1)),
+                ('search_request', models.ForeignKey(to='Search.SearchRequest')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'db_table': 'search_results',
+                'db_table': 'user_search_requests',
             },
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name='item',
-            name='pagemap',
-            field=models.ForeignKey(to='Search.Pagemap'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='item',
-            name='search_result',
-            field=models.ForeignKey(to='Search.SearchResult', related_name='items'),
+            model_name='searchitem',
+            name='search_request',
+            field=models.ManyToManyField(to='Search.SearchRequest'),
             preserve_default=True,
         ),
     ]
