@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from datetime import date, timedelta
+import functools
 
 from Comments.models import Comment
 from GoogleSocialSearch import settings
@@ -92,6 +93,7 @@ class SearchItem(models.Model):
     def get_score(self):
         return self.get_vote_score() + self.click_count + self.view_count
 
+    @functools.lru_cache(maxsize=64, typed=False)
     def get_price(self):
         views = SearchItemView.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self)
         clicks = SearchItemClick.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self)
