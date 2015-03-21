@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from datetime import date, timedelta
+
 from Comments.models import Comment
+from GoogleSocialSearch import settings
 
 
 class SearchRequest(models.Model):
@@ -19,9 +22,14 @@ class SearchRequest(models.Model):
     class Meta:
         db_table = 'search_requests'
 
-    def update_items_views(self):
+    def update_items_views(self, user=None):
         for search_item in self.searchitem_set.all():
             search_item.add_view()
+
+            search_item_view = SearchItemView()
+            search_item_view.search_item = search_item
+            search_item_view.user = user
+            search_item_view.save()
 
 
 class UserSearchRequest(models.Model):
@@ -49,7 +57,7 @@ class SearchItem(models.Model):
     formatted_url = models.CharField(max_length=256)
     html_formatted_url = models.CharField(max_length=256)
 
-    view_count = models.IntegerField(default=1)
+    view_count = models.IntegerField(default=0)
     click_count = models.IntegerField(default=0)
     upvote_count = models.IntegerField(default=0)
     downvote_count = models.IntegerField(default=0)
@@ -84,6 +92,19 @@ class SearchItem(models.Model):
     def get_score(self):
         return self.get_vote_score() + self.click_count + self.view_count
 
+    def get_price(self):
+        views = SearchItemView.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self)
+        clicks = SearchItemClick.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self)
+        upvotes = SearchItemVoter.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self,
+                                                 vote_type=SearchItemVoter.VOTE_TYPE_UP)
+        downvotes = SearchItemVoter.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self,
+                                                   vote_type=SearchItemVoter.VOTE_TYPE_DOWN)
+
+        votes_count = len(upvotes) - len(downvotes)
+
+        item_price = (len(views) * settings.ITEM_VIEW_MULTIPLIER) + (len(clicks) * settings.ITEM_CLICK_MULTIPLIER) + (votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
+        return item_price
+
 
 class SearchItemVoter(models.Model):
     VOTE_TYPE_UNKNOWN = 0
@@ -112,26 +133,16 @@ class SearchItemComments(models.Model):
 class SearchItemClick(models.Model):
     search_item = models.ForeignKey(SearchItem)
     user = models.ForeignKey(User, null=True)
-    click_count = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'search_item_clicks'
 
-    def add_click(self):
-        self.click_count += 1
-        self.save()
-
 
 class SearchItemView(models.Model):
     search_item = models.ForeignKey(SearchItem)
     user = models.ForeignKey(User, null=True)
-    view_count = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'search_item_views'
-
-    def add_view(self):
-        self.view_count += 1
-        self.save()

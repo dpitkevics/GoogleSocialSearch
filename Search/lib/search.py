@@ -62,7 +62,7 @@ def do_search(query, start=1, ip=None, user=None):
 
     try:
         search_request = models.SearchRequest.objects.get(search_terms=query, start_index=start, country_code=country_code)
-        search_request.update_items_views()
+        search_request.update_items_views(user=user)
 
         if user is not None:
             update_user(search_request, user)
@@ -142,6 +142,10 @@ def do_search(query, start=1, ip=None, user=None):
     search_request.country_code = country_code
 
     search_request.save()
+
+    search_request.update_items_views(user=user)
+
+    search_request.update_items_views(user=user)
 
     if user is not None:
         update_user(search_request, user)

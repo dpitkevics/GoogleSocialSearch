@@ -2,8 +2,8 @@
 {% load integers %}
 
 <div class="btn btn-success tooltip-btn" data-toggle="collapse" data-placement="right" title="{% trans "Expand" %}" data-target="#collapsed-scores-{{ item.pk|num_encode }}" aria-expanded="false" aria-controls="collapsed-scores-{{ item.pk|num_encode }}">
-    Score
-    <span class="badge">{{ item.get_score }}</span>
+    Price
+    <span class="badge">{{ item.get_price }}</span>
 </div>
 
 <div class="collapse" id="collapsed-scores-{{ item.pk|num_encode }}">

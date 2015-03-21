@@ -83,16 +83,14 @@ def open_link(request, url):
         search_item.add_click()
 
         if request.user.is_authenticated():
-            try:
-                search_item_click = SearchItemClick.objects.get(search_item=search_item, user=request.user)
-                search_item_click.add_click()
-            except ObjectDoesNotExist:
-                search_item_click = SearchItemClick()
-                search_item_click.search_item = search_item
-                search_item_click.user = request.user
-                search_item_click.save()
-
+            search_item_clicks = SearchItemClick.objects.filter(search_item=search_item, user=request.user)
+            if len(search_item_clicks) == 0:
                 request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_CLICK)
+
+            search_item_click = SearchItemClick()
+            search_item_click.search_item = search_item
+            search_item_click.user = request.user
+            search_item_click.save()
 
         return HttpResponseRedirect(search_item.link)
     except ObjectDoesNotExist:
