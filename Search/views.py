@@ -122,12 +122,18 @@ def vote(request):
             search_item_voter = SearchItemVoter()
             search_item_voter.search_item = search_item
             search_item_voter.user = request.user
-            search_item_voter.save()
 
             if request.GET['type'] == 'upvote':
+                vote_type = SearchItemVoter.VOTE_TYPE_UP
                 search_item.add_upvote()
             elif request.GET['type'] == 'downvote':
+                vote_type = SearchItemVoter.VOTE_TYPE_DOWN
                 search_item.add_downvote()
+            else:
+                vote_type = SearchItemVoter.VOTE_TYPE_UNKNOWN
+
+            search_item_voter.vote_type = vote_type
+            search_item_voter.save()
 
             request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_VOTE)
 

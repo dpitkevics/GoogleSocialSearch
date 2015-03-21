@@ -86,8 +86,14 @@ class SearchItem(models.Model):
 
 
 class SearchItemVoter(models.Model):
+    VOTE_TYPE_UNKNOWN = 0
+    VOTE_TYPE_UP = 1
+    VOTE_TYPE_DOWN = 2
+
     search_item = models.ForeignKey(SearchItem)
     user = models.ForeignKey(User)
+    vote_type = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'search_item_voters'
@@ -105,12 +111,27 @@ class SearchItemComments(models.Model):
 
 class SearchItemClick(models.Model):
     search_item = models.ForeignKey(SearchItem)
-    user = models.ForeignKey(User)
-    click_count = models.IntegerField(default=0)
+    user = models.ForeignKey(User, null=True)
+    click_count = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'search_item_clicks'
 
     def add_click(self):
         self.click_count += 1
+        self.save()
+
+
+class SearchItemView(models.Model):
+    search_item = models.ForeignKey(SearchItem)
+    user = models.ForeignKey(User, null=True)
+    view_count = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'search_item_views'
+
+    def add_view(self):
+        self.view_count += 1
         self.save()
