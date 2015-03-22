@@ -69,3 +69,13 @@ ul.typeahead.dropdown-menu a strong {
 .comment-carousel {
     margin-bottom: 10px;
 }
+
+.owners-result-item {
+    background: #6C594E;
+}
+
+.alert-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}

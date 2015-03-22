@@ -119,6 +119,22 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'TEMPLATE_CONTEXT_PROCESSORS': (
+            "django.contrib.auth.context_processors.auth",
+            "django.template.context_processors.debug",
+            "django.template.context_processors.i18n",
+            "django.template.context_processors.media",
+            "django.template.context_processors.static",
+            "django.template.context_processors.tz",
+            "django.contrib.messages.context_processors.messages"
+        )
+    },
+]
+
 # Google Api Configuration
 API_KEY = 'AIzaSyBrM670Tag_vNzs7Ld66Cev43wbVbmd0DU'
 API_SEARCH_CX = '011767239663903188113:jx6ffcypnqs'

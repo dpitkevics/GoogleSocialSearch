@@ -32,7 +32,38 @@ $(function () {
             icon.removeClass('glyphicon-minus').addClass('glyphicon-plus');
         }
     });
+
+    body.on('click', '.purchase-btn', function () {
+        var button = $(this);
+        var url = button.attr('href');
+
+        var parts = url.split('=');
+        var srpk = parts[parts.length - 1];
+
+        $.ajax({
+            'url': url,
+            'success': function (html) {
+                if (html.length > 5) {
+                    $("#" + srpk).replaceWith(html);
+                }
+
+                refreshMessages();
+            }
+        });
+
+        return false;
+    });
 });
+
+function refreshMessages()
+{
+    $.ajax({
+        'url': '/flash-messages/',
+        'success': function (html) {
+            $("#content").prepend(html);
+        }
+    });
+}
 
 function commentFormSubmit(form) {
     $.ajax({

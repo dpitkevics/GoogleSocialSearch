@@ -10,4 +10,6 @@ urlpatterns = patterns('',
     url(r'^vote/$', views.vote, name='vote'),
     url(r'^score/$', views.load_scores, name='scores'),
     url(r'^comment/add/$', views.add_comment, name='add_comment'),
+    url(r'^purchase/$', views.purchase, name='purchase'),
+    url(r'^flash-messages/$', views.get_messages, name='get_messages'),
 )

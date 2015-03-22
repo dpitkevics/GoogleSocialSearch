@@ -14,3 +14,7 @@ class UserProfile(models.Model):
     def add_balance(self, amount):
         self.balance += amount
         self.save()
+
+    def remove_balance(self, amount):
+        self.balance -= amount
+        self.save()

@@ -143,10 +143,6 @@ def do_search(query, start=1, ip=None, user=None):
 
     search_request.save()
 
-    search_request.update_items_views(user=user)
-
-    search_request.update_items_views(user=user)
-
     if user is not None:
         update_user(search_request, user)
 
@@ -253,6 +249,8 @@ def do_search(query, start=1, ip=None, user=None):
 
             search_request.searchitem_set.add(result_item)
             search_request.save()
+
+        search_request.update_items_views(user=user)
 
     return search_request
 

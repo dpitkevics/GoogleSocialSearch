@@ -3,7 +3,7 @@
 {% load integers %}
 {% load voting %}
 
-<div class="row search-result-item">
+<div class="row search-result-item {% if item.owner == request.user %}owners-result-item{% endif %}" id="{{ item.pk|num_encode }}">
     <div class="col-md-1 col-sm-4 search-result-social text-center">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -47,6 +47,19 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 {% trans 'Found in:' %} <span class="text-info">{{ item.formatted_url }}</span>
+            </div>
+        </div>
+
+        <div class="row margin-top">
+            <div class="col-md-12 col-sm-12">
+                <div class="btn-group" role="group">
+                    <a href="#" class="btn btn-info">View</a>
+                    {% if item.owner == request.user %}
+                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">{% trans 'Sell' %}</a>
+                    {% else %}
+                        <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">{% trans 'Buy' %}</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

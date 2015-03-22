@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http.response import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseRedirect
+from django.contrib import messages
 
 import json
 from urllib.parse import unquote
@@ -12,6 +13,7 @@ from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
 from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick
+from Search.lib.exceptions import PurchaseException
 
 from Comments.models import Comment
 from Comments.forms import CommentForm
@@ -193,3 +195,53 @@ def add_comment(request):
                 pass
 
     return HttpResponse('')
+
+
+def purchase(request):
+    if not request.user.is_authenticated():
+        messages.add_message(request, messages.ERROR, 'You are not authenticated')
+        return HttpResponse('')
+
+    try:
+        pk = num_decode(request.GET['srpk'])
+        search_item = SearchItem.objects.get(pk=pk)
+
+        profile = request.user.profile.get()
+        balance = profile.balance
+
+        item_price = search_item.get_price()
+
+        if request.GET['method'] == 'buy':
+            if search_item.owner is not None:
+                raise PurchaseException('Selected item already have an owner')
+
+            if balance < item_price:
+                raise PurchaseException('Your balance exceeds item price')
+
+            profile.remove_balance(item_price)
+
+            search_item.owner = request.user
+            search_item.save()
+        elif request.GET['method'] == 'sell':
+            if search_item.owner != request.user:
+                raise PurchaseException('Owner is differs from logged in user')
+
+            search_item.owner = None
+            search_item.save()
+
+            profile.add_balance(item_price)
+
+        context = {
+            'item': search_item
+        }
+
+        return render(request, 'Search/includes/search_item.html', context)
+    except ObjectDoesNotExist:
+        raise PurchaseException('Search item is not found')
+    except PurchaseException as e:
+        messages.add_message(request, messages.ERROR, e.message)
+        return HttpResponse('')
+
+
+def get_messages(request):
+    return render(request, 'includes/messages.html', {})

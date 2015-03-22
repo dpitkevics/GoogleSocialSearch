@@ -69,6 +69,8 @@
     </nav>
 
     <div class="container-fluid" id="content">
+        {% include 'includes/messages.html' with messages=messages %}
+
         {% block content %}{% endblock %}
     </div>
 
