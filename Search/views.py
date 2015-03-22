@@ -224,7 +224,7 @@ def purchase(request):
             search_item.save()
         elif request.GET['method'] == 'sell':
             if search_item.owner != request.user:
-                raise PurchaseException('Owner is differs from logged in user')
+                raise PurchaseException('You are not the owner of this item')
 
             search_item.owner = None
             search_item.save()
