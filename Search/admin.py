@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from Search.models import SearchPlugin
+
+admin.site.register(SearchPlugin)

@@ -14,6 +14,7 @@ from Search.lib import suggestions
 from Search.lib.pagination import Pagination
 from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick
 from Search.lib.exceptions import PurchaseException
+from Search.lib.abstract_plugin import AbstractPlugin
 
 from Comments.models import Comment
 from Comments.forms import CommentForm
@@ -62,20 +63,44 @@ def load_search(request):
             pagination = Pagination(request, total_search_results, current_page)
         else:
             pagination = None
+
+        search_plugin_instance = AbstractPlugin.load_plugin(request)
     else:
         form = SearchForm()
 
         search_result = None
         pagination = None
+        search_plugin_instance = None
+
 
     context = {
         'form': form,
         'search_result': search_result,
         'pagination': pagination,
         'comment_form': comment_form,
+        'search_plugin': search_plugin_instance
     }
 
     return render(request, 'Search/load_search.html', context)
+
+
+def load_item(request):
+    try:
+        pk = num_decode(request.GET['srpk'])
+        search_item = SearchItem.objects.get(pk=pk)
+        comment_form = CommentForm()
+
+        context = {
+            'item': search_item,
+            'comment_form': comment_form,
+        }
+
+        return render(request, 'Search/plugins/site.html', context)
+    except ObjectDoesNotExist:
+        pass
+
+    messages.add_message(request, messages.ERROR, 'Item have not been found')
+    return HttpResponse('')
 
 
 def open_link(request, url):
@@ -108,6 +133,7 @@ def suggestion(request):
 
 def vote(request):
     if not request.user.is_authenticated():
+        messages.add_message(request, messages.ERROR, 'You are not authenticated')
         return HttpResponse('')
 
     try:
@@ -117,6 +143,7 @@ def vote(request):
         try:
             SearchItemVoter.objects.get(user=request.user, search_item=search_item)
 
+            messages.add_message(request, messages.ERROR, 'You already have voted on this item')
             return HttpResponse('')
         except ObjectDoesNotExist:
             search_item_voter = SearchItemVoter()
@@ -137,6 +164,8 @@ def vote(request):
 
             request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_VOTE)
 
+            messages.add_message(request, messages.SUCCESS, 'Vote successfully added')
+
             context = {
                 'item': search_item
             }
@@ -144,6 +173,8 @@ def vote(request):
             return render(request, 'Search/includes/scores.html', context)
     except ObjectDoesNotExist:
         pass
+
+    messages.add_message(request, messages.ERROR, 'Search item is not found')
     return HttpResponse('')
 
 
@@ -159,6 +190,8 @@ def load_scores(request):
         return render(request, 'Search/includes/scores.html', context)
     except ObjectDoesNotExist:
         pass
+
+    messages.add_message(request, messages.ERROR, 'Scores for item have not been found')
     return HttpResponse('')
 
 
@@ -190,10 +223,13 @@ def add_comment(request):
                     'item': search_item
                 }
 
+                messages.add_message(request, messages.SUCCESS, 'Comment successfully added')
                 return render(request, 'Search/includes/comment_list.html', context)
             except ObjectDoesNotExist:
-                pass
+                messages.add_message(request, messages.ERROR, 'Search item is not found')
+                return HttpResponse('')
 
+    messages.add_message(request, messages.ERROR, "You are not authenticated")
     return HttpResponse('')
 
 
@@ -222,6 +258,8 @@ def purchase(request):
 
             search_item.owner = request.user
             search_item.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Item successfully bought')
         elif request.GET['method'] == 'sell':
             if search_item.owner != request.user:
                 raise PurchaseException('You are not the owner of this item')
@@ -230,6 +268,8 @@ def purchase(request):
             search_item.save()
 
             profile.add_balance(item_price)
+
+            messages.add_message(request, messages.SUCCESS, 'Item successfully selled')
 
         context = {
             'item': search_item

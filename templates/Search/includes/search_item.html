@@ -53,11 +53,20 @@
         <div class="row margin-top">
             <div class="col-md-12 col-sm-12">
                 <div class="btn-group" role="group">
-                    <a href="#" class="btn btn-info">View</a>
+                    <a href="{% url 'Search:index' %}?query={{ "site "|add:item.link|urlencode }}" class="btn btn-info">
+                        <i class="fa fa-info-circle"></i>
+                        {% trans 'View' %}
+                    </a>
                     {% if item.owner == request.user %}
-                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">{% trans 'Sell' %}</a>
+                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
+                            <i class="fa fa-money"></i>
+                            {% trans 'Sell' %}
+                        </a>
                     {% else %}
-                        <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">{% trans 'Buy' %}</a>
+                        <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
+                            <i class="fa fa-shopping-cart"></i>
+                            {% trans 'Buy' %}
+                        </a>
                     {% endif %}
                 </div>
             </div>

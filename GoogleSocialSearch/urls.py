@@ -6,6 +6,7 @@ from GoogleSocialSearch import settings
 
 urlpatterns = patterns('',
     url(r'^', include('Search.urls', namespace='Search')),
+    url(r'^user/', include('User.urls', namespace='User')),
     url(r'^admin/', include(admin.site.urls)),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url('', include('django.contrib.auth.urls', namespace='auth')),

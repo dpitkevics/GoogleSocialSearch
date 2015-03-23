@@ -147,3 +147,15 @@ class SearchItemView(models.Model):
 
     class Meta:
         db_table = 'search_item_views'
+
+
+class SearchPlugin(models.Model):
+    query = models.CharField(max_length=512)
+    package = models.CharField(max_length=256)
+    class_name = models.CharField(max_length=128)
+
+    class Meta:
+        db_table = 'search_plugins'
+
+    def __str__(self):
+        return self.query

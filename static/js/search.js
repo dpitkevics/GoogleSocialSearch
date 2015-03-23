@@ -18,6 +18,9 @@ $(function () {
                 button.parents('.search-result-social').find('a.vote-link').each(function () {
                     $(this).attr('disabled', 'disabled');
                 });
+
+                refreshMessages();
+                refreshFullView();
             }
         });
 
@@ -48,6 +51,8 @@ $(function () {
                 }
 
                 refreshMessages();
+                refreshBalance();
+                refreshFullView();
             }
         });
 
@@ -65,6 +70,30 @@ function refreshMessages()
     });
 }
 
+function refreshBalance()
+{
+    $.ajax({
+        'url': '/user/get-balance/',
+        'success': function (balance) {
+            $("#balance").text(balance);
+        }
+    });
+}
+
+function refreshFullView()
+{
+    var srpk = $("#item-full-view").data('srpk');
+    $.ajax({
+        'url': '/load-item/',
+        'data': {
+            'srpk': srpk
+        },
+        'success': function (html) {
+            $("#item-full-view").replaceWith(html);
+        }
+    });
+}
+
 function commentFormSubmit(form) {
     $.ajax({
         'url': form.attr('action'),
@@ -76,6 +105,9 @@ function commentFormSubmit(form) {
                 $("#comment-list-" + srpk).html(html);
                 form.find('textarea[name="comment_text"]').val('');
             }
+
+            refreshMessages();
+            refreshFullView();
         }
     });
 

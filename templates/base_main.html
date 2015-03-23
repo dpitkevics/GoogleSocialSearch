@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load settings %}
 {% load i18n %}
+{% load money %}
 
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,7 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/loadingbar.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.css' %}" />
 
     {% block bootstrap_theme %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme-used.css' %}" />
@@ -47,6 +49,13 @@
                             <div class="profile-header">
                                 {{ user.get_full_name|default:user.username }}
                             </div>
+                        </li>
+                        <li>
+                            <a>
+                                {% blocktrans with request.user.profile.get.balance|convert_to_money as balance %}
+                                    <i class="fa fa-money"></i> <span id="balance">{{ balance }}</span>
+                                {% endblocktrans %}
+                            </a>
                         </li>
                         <li>
                             <a href="{% url 'auth:logout' %}?next={{ request.path }}"><i class="glyphicon glyphicon-off"></i> {% trans "Logout" %}</a>

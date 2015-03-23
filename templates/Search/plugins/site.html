@@ -1,0 +1,161 @@
+{% load i18n %}
+{% load integers %}
+{% load voting %}
+
+<div id="item-full-view" data-srpk="{{ item.pk|num_encode }}">
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            <div class="row">
+                <div class="col-md-11 col-sm-12 text-center">
+                    <h2>{{ item }}</h2>
+                </div>
+
+                <div class="col-md-1 col-sm-12 text-center">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <a href="{% url 'Search:vote' %}?type=upvote&srpk={{ item.pk|num_encode }}" class="btn btn-success vote-link" {% if not item|can_vote:request.user %}disabled="disabled"{% endif %}>
+                                <i class="glyphicon glyphicon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <a href="{% url 'Search:vote' %}?type=downvote&srpk={{ item.pk|num_encode }}" class="btn btn-danger vote-link" {% if not item|can_vote:request.user %}disabled="disabled"{% endif %}>
+                                <i class="glyphicon glyphicon-chevron-down"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            <p>
+                {{ item.snippet }}
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            {% blocktrans with item.display_link as display_link %}
+                                <i class="fa fa-globe"></i> Domain: <a href="http://{{ display_link }}" target="_blank">{{ display_link }}</a>
+                            {% endblocktrans %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            {% url 'Search:open' url=item.link|urlencode as item_url %}
+                            {% blocktrans with item.link as link %}
+                                <i class="fa fa-link"></i> Search Link: <a href="{{ link }}" target="_blank" data-href="{{ item_url }}" onmousedown="makeHref($(this));">{{ link }}</a>
+                            {% endblocktrans %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 text-right">
+                    {% blocktrans with item.owner.get_full_name|default:"None" as owner %}
+                        <i class="fa fa-user"></i> Owner: {{ owner }}
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            <div class="btn-group" role="group">
+                <a class="btn btn-info no-btn">
+                    {% blocktrans with item.view_count as views %}
+                        Views: <span class="badge">{{ views }}</span>
+                    {% endblocktrans %}
+                </a>
+                <a class="btn btn-default no-btn">
+                    {% blocktrans with item.click_count as clicks %}
+                        Clicks: <span class="badge">{{ clicks }}</span>
+                    {% endblocktrans %}
+                </a>
+                <a class="btn btn-warning no-btn">
+                    {% blocktrans with item.get_vote_score as vote_score %}
+                        Vote Score: <span class="badge">{{ vote_score }}</span>
+                    {% endblocktrans %}
+                </a>
+            </div>
+
+            <div class="pull-right">
+                <div class="btn-group" role="group">
+                    {% if item.owner == request.user %}
+                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
+                            <i class="fa fa-money"></i>
+                            {% trans 'Sell' %}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
+                            <i class="fa fa-shopping-cart"></i>
+                            {% trans 'Buy' %}
+                        </a>
+                    {% endif %}
+
+                    <a class="btn btn-success no-btn">
+                        {% blocktrans with item.get_price as price %}
+                            Price: <span class="badge">{{ price }}</span>
+                        {% endblocktrans %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row margin-top">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            {% if item.comments.all|length > 0 %}
+                {% for item_comment in item.comments.all %}
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            {% include 'Search/includes/comment.html' with item_comment=item_comment %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>{% trans "Be first to comment this search result!" %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+        <div class="row margin-top">
+            <div class="col-md-6 col-sm-12 col-md-offset-3">
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <a class="fake-btn comment-add" data-toggle="collapse" data-target="#collapsed-big-comment-{{ item.pk|num_encode }}" aria-expanded="false" aria-controls="collapsed-big-comment-{{ item.pk|num_encode }}">
+                            <i class="glyphicon glyphicon-plus"></i> {% trans "Add Comment" %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row collapse" id="collapsed-big-comment-{{ item.pk|num_encode }}">
+                    <div class="col-md-12 col-sm-12">
+                        <form action="{% url 'Search:add_comment' %}" method="post" class="comment-form" onsubmit="return commentFormSubmit($(this));">
+                            {% csrf_token %}
+                            {{ comment_form }}
+
+                            <input type="hidden" name="srpk" value="{{ item.pk|num_encode }}" />
+                            <input type="submit" class="btn btn-success" value="{% trans "Comment" %}" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+</div>

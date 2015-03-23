@@ -8,6 +8,12 @@
 {% block title %}{% title search_result.search_terms %}{% endblock %}
 
 {% block content %}
+    {% if search_plugin != None %}
+        {{ search_plugin.render.content|safe }}
+
+        <hr />
+    {% endif %}
+
     {% if search_result != None %}
         {% if search_result.searchitem_set.all|length > 0 %}
             <div class="row">
