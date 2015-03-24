@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 from Search.models import SearchPlugin
-from GoogleSocialSearch.lib.classes import str_to_class
+from Jooglin.lib.classes import str_to_class
 
 
 class AbstractPlugin(object):

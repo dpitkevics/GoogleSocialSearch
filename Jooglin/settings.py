@@ -47,7 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
     'guardian',
-    'GoogleSocialSearch',
+    'Jooglin',
     'Search',
     'User',
     'Comments'
@@ -76,9 +76,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 )
 
-ROOT_URLCONF = 'GoogleSocialSearch.urls'
+ROOT_URLCONF = 'Jooglin.urls'
 
-WSGI_APPLICATION = 'GoogleSocialSearch.wsgi.application'
+WSGI_APPLICATION = 'Jooglin.wsgi.application'
 
 
 # Database
@@ -88,9 +88,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',
-        'NAME': 'google_social_search',
-        'USER': 'google_social_search',
-        'PASSWORD': 'girjgoihrueh7wy34',
+        'NAME': 'jooglin',
+        'USER': 'jooglin',
+        'PASSWORD': '2AW8zedAfEjI',
     }
 }
 

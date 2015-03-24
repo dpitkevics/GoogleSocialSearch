@@ -4,11 +4,11 @@ from urllib.parse import quote
 import os
 
 from django.core.exceptions import ObjectDoesNotExist
-from GoogleSocialSearch.settings import BASE_DIR
+from Jooglin.settings import BASE_DIR
 
 import pygeoip
 
-from GoogleSocialSearch import settings
+from Jooglin import settings
 
 from Search import models
 

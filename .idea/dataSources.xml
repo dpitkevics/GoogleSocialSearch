@@ -4,8 +4,11 @@
     <data-source source="LOCAL" name="Django default" uuid="ff04aa3a-d1fc-4081-9d0f-9a5371bfa507">
       <driver-ref>sqlite.xerial</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://127.0.0.1/google_social_search</jdbc-url>
+      <jdbc-url>jdbc:mysql://127.0.0.1/jooglin</jdbc-url>
+      <user-name>jooglin</user-name>
+      <user-password>df98dfebdffddf92dfd0dfcfdfcedfebdfccdfefdfc0dfe3</user-password>
       <libraries />
     </data-source>
   </component>
 </project>
+

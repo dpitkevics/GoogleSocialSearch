@@ -1,6 +1,6 @@
 from django.template import Library
 
-from GoogleSocialSearch.lib import integer
+from Jooglin.lib import integer
 
 register = Library()
 

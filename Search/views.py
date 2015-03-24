@@ -21,9 +21,9 @@ from Search.lib.abstract_plugin import AbstractPlugin
 from Comments.models import Comment
 from Comments.forms import CommentForm
 
-from GoogleSocialSearch.lib.network import get_client_ip
-from GoogleSocialSearch.lib.integer import num_decode
-from GoogleSocialSearch import settings
+from Jooglin.lib.network import get_client_ip
+from Jooglin.lib.integer import num_decode
+from Jooglin import settings
 
 
 def index(request):

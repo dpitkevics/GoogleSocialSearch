@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from datetime import date, timedelta
 
 from Comments.models import Comment
-from GoogleSocialSearch import settings
+from Jooglin import settings
 
 
 class SearchRequest(models.Model):

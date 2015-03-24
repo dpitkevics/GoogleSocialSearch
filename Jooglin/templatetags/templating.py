@@ -1,6 +1,6 @@
 from django import template
 
-from GoogleSocialSearch.settings import SITE_NAME
+from Jooglin.settings import SITE_NAME
 
 register = template.Library()
 
