@@ -87,3 +87,4 @@ class Form(forms.Form):
         html_output = mark_safe('\n'.join(output))
 
         return html_output
+

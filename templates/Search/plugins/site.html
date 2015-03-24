@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    {% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated and perms.Search.add_searchitemcomments %}
         <div class="row margin-top">
             <div class="col-md-6 col-sm-12 col-md-offset-3">
 
@@ -153,6 +153,14 @@
                             <input type="submit" class="btn btn-success" value="{% trans "Comment" %}" />
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row margin-top">
+            <div class="col-md-6 col-sm-12 col-md-offset-3">
+                <div class="label label-info">
+                    {% trans 'You need a higher level to add comments' %}
                 </div>
             </div>
         </div>

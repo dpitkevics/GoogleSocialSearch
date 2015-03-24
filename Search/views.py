@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseRedirect
 from django.contrib import messages
 
+from guardian.shortcuts import assign_perm, remove_perm
+
 import json
 from urllib.parse import unquote
 import html
@@ -136,6 +138,10 @@ def vote(request):
         messages.add_message(request, messages.ERROR, 'You are not authenticated')
         return HttpResponse('')
 
+    if not request.user.has_perm('Search.can_vote'):
+        messages.add_message(request, messages.ERROR, "You don't have permissions to vote")
+        return HttpResponse('')
+
     try:
         pk = num_decode(request.GET['srpk'])
         search_item = SearchItem.objects.get(pk=pk)
@@ -197,6 +203,10 @@ def load_scores(request):
 
 def add_comment(request):
     if request.user.is_authenticated() and request.method == 'POST':
+        if not request.user.has_perm('Search.add_searchitemcomments'):
+            messages.add_message(request, messages.ERROR, 'You have no permissions to add comments')
+            return HttpResponse('')
+
         comment_text = request.POST['comment_text']
         if len(comment_text) > 0:
             pk = num_decode(request.POST['srpk'])
@@ -219,8 +229,10 @@ def add_comment(request):
 
                 request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_COMMENT)
 
+                comment_form = CommentForm()
+
                 context = {
-                    'item': search_item
+                    'item': search_item,
                 }
 
                 messages.add_message(request, messages.SUCCESS, 'Comment successfully added')
@@ -246,8 +258,12 @@ def purchase(request):
         balance = profile.balance
 
         item_price = search_item.get_price()
+        comment_form = CommentForm()
 
         if request.GET['method'] == 'buy':
+            if not request.user.has_perm('Search.can_buy'):
+                raise PurchaseException('You have no permissions to buy an item')
+
             if search_item.owner is not None:
                 raise PurchaseException('Selected item already have an owner')
 
@@ -259,8 +275,13 @@ def purchase(request):
             search_item.owner = request.user
             search_item.save()
 
+            assign_perm('owner', request.user, search_item)
+
             messages.add_message(request, messages.SUCCESS, 'Item successfully bought')
         elif request.GET['method'] == 'sell':
+            if not request.user.has_perm('Search.can_sell'):
+                raise PurchaseException('You have no permissions to sell an item')
+
             if search_item.owner != request.user:
                 raise PurchaseException('You are not the owner of this item')
 
@@ -269,10 +290,13 @@ def purchase(request):
 
             profile.add_balance(item_price)
 
+            remove_perm('owner', request.user, search_item)
+
             messages.add_message(request, messages.SUCCESS, 'Item successfully selled')
 
         context = {
-            'item': search_item
+            'item': search_item,
+            'comment_form': comment_form
         }
 
         return render(request, 'Search/includes/search_item.html', context)

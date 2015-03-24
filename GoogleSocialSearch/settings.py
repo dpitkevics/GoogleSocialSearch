@@ -37,6 +37,8 @@ AUTH_PROFILE_MODULE = 'User.UserProfile'
 # Application definition
 
 INSTALLED_APPS = (
+    'django_admin_bootstrapped.bootstrap3',
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +46,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'guardian',
     'GoogleSocialSearch',
     'Search',
     'User',
@@ -146,7 +149,10 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.linkedin.LinkedinOAuth',
     'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
+
+ANONYMOUS_USER_ID = -1
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']

@@ -62,11 +62,18 @@ class SearchItem(models.Model):
     upvote_count = models.IntegerField(default=0)
     downvote_count = models.IntegerField(default=0)
     owner = models.ForeignKey(User, null=True)
+    owner_comment = models.TextField(null=True)
 
     search_request = models.ManyToManyField(SearchRequest)
 
     class Meta:
         db_table = 'search_items'
+        permissions = (
+            ('can_vote', 'Can Vote'),
+            ('can_buy', 'Can Buy'),
+            ('can_sell', 'Can Sell'),
+            ('owner', 'Owner'),
+        )
 
     def __str__(self):
         return self.title
@@ -103,7 +110,8 @@ class SearchItem(models.Model):
 
         votes_count = len(upvotes) - len(downvotes)
 
-        item_price = (len(views) * settings.ITEM_VIEW_MULTIPLIER) + (len(clicks) * settings.ITEM_CLICK_MULTIPLIER) + (votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
+        item_price = (len(views) * settings.ITEM_VIEW_MULTIPLIER) + (len(clicks) * settings.ITEM_CLICK_MULTIPLIER) + (
+        votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
         return item_price
 
 
