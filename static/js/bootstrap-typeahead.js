@@ -44,10 +44,13 @@
     constructor: Typeahead
 
   , select: function () {
-      var val = this.$menu.find('.active').attr('data-value')
+      var val = this.$menu.find('.active').attr('data-value');
+      if (typeof(val) === 'undefined') {
+          val = this.query;
+      }
       this.$element
         .val(this.updater(val))
-        .change()
+        .change();
       return this.hide()
     }
 
