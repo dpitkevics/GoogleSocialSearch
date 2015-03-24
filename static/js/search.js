@@ -13,6 +13,7 @@ $(function () {
             'success': function (html) {
                 if (html.length > 5) {
                     $("#scores-" + srpk).html(html);
+                    refreshFullView();
                 }
 
                 button.parents('.search-result-social').find('a.vote-link').each(function () {
@@ -20,7 +21,6 @@ $(function () {
                 });
 
                 refreshMessages();
-                refreshFullView();
             }
         });
 
@@ -48,11 +48,11 @@ $(function () {
             'success': function (html) {
                 if (html.length > 5) {
                     $("#" + srpk).replaceWith(html);
+                    refreshFullView();
                 }
 
                 refreshMessages();
                 refreshBalance();
-                refreshFullView();
             }
         });
 

@@ -88,7 +88,7 @@ def load_search(request):
 
 def load_item(request):
     try:
-        pk = num_decode(request.GET['srpk'])
+        pk = num_decode(request.GET.get('srpk', False))
         search_item = SearchItem.objects.get(pk=pk)
         comment_form = CommentForm()
 
