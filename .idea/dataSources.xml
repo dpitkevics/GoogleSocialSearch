@@ -5,10 +5,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1/jooglin</jdbc-url>
-      <user-name>jooglin</user-name>
-      <user-password>df98dfebdffddf92dfd0dfcfdfcedfebdfccdfefdfc0dfe3</user-password>
       <libraries />
     </data-source>
   </component>
 </project>
-
