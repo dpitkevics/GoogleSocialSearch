@@ -14,7 +14,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Site Configuration
-SITE_NAME = 'Google Social Search'
+SITE_NAME = 'Jooglin Search'
 LINKS_NEW_WINDOW = True
 
 
