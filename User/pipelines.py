@@ -1,6 +1,4 @@
-from urllib.request import urlopen
-
-from django.core.files.base import ContentFile
+from django.contrib.auth.models import Group
 
 from social.backends.google import GoogleOAuth2
 from social.backends.facebook import FacebookOAuth2
@@ -8,6 +6,8 @@ from social.backends.linkedin import LinkedinOAuth
 from social.backends.twitter import TwitterOAuth
 
 from User.models import UserProfile
+
+from Jooglin import settings
 
 
 def update_user_social_data(strategy, *args, **kwargs):
@@ -60,3 +60,6 @@ def update_user_social_data(strategy, *args, **kwargs):
             profile.photo = image_url
             profile.save()
     user.save()
+
+    group = Group.objects.get(name=settings.FIRST_LEVEL_GROUP_NAME)
+    group.user_set.add(user)
