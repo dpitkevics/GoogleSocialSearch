@@ -51,3 +51,6 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+# Additional
+Jooglin/local_settings.py
