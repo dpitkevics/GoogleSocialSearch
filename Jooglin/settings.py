@@ -25,7 +25,7 @@ LINKS_NEW_WINDOW = True
 SECRET_KEY = '4)x%$25cdo(($bhrj++zaso5x=a-hwjbyii!&7-7si@1%0f%rh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -194,3 +194,8 @@ ITEM_VOTE_SCORE_MULTIPLIER = 30
 # Groups configuration
 FIRST_LEVEL_GROUP_NAME = 'Basic'
 SECOND_LEVEL_GROUP_NAME = 'Novice'
+
+try:
+    from Jooglin.local_settings import *
+except ImportError:
+    pass
