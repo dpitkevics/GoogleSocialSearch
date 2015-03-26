@@ -36,7 +36,7 @@
             <div class="col-md-12 col-sm-12">
                 <h4>
                     {% settings_context "LINKS_NEW_WINDOW" as LINKS_NEW_WINDOW %}
-                    <a href="{{ item.link }}" data-href="{% url 'Search:open' url=item.link|urlencode %}" onmousedown="makeHref($(this));"
+                    <a href="{{ item.link }}" data-href="{% url 'Search:open' pk=item.pk|num_encode %}" onmousedown="makeHref($(this));"
                        {% if LINKS_NEW_WINDOW == True %}target="_blank"{% endif %}>
                         {% if LINKS_NEW_WINDOW == True %}
                             <i class="glyphicon glyphicon-new-window new-window-icon"></i>
@@ -82,7 +82,27 @@
     </div>
 
     <div class="col-md-4 col-sm-12 search-result-snippet">
-        <p>{{ item.html_snippet|safe }}</p>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <p>{{ item.html_snippet|safe }}</p>
+            </div>
+        </div>
+
+        {% if item.owner_comment != None %}
+            <hr />
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <strong>{% trans 'Owners says:' %}</strong>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <p>{{ item.owner_comment|safe }}</p>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <div class="col-md-4 col-sm-12">

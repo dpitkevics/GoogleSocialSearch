@@ -105,10 +105,10 @@ def load_item(request):
     return HttpResponse('')
 
 
-def open_link(request, url):
+def open_link(request, pk):
     try:
-        url = unquote(url)
-        search_item = SearchItem.objects.get(link=url)
+        pk = num_decode(pk)
+        search_item = SearchItem.objects.get(pk=pk)
         search_item.add_click()
 
         if request.user.is_authenticated():
@@ -268,7 +268,7 @@ def purchase(request):
                 raise PurchaseException('Selected item already have an owner')
 
             if balance < item_price:
-                raise PurchaseException('Your balance exceeds item price')
+                raise PurchaseException('Item price exceeds your balance')
 
             profile.remove_balance(item_price)
 
