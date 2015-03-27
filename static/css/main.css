@@ -84,3 +84,11 @@ ul.typeahead.dropdown-menu a strong {
     z-index: 10;
     width: 98%;
 }
+
+.navbar {
+    margin-bottom: 0;
+}
+
+#experience-progress {
+    height: 5px;
+}

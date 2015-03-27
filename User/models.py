@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 
+from Jooglin.settings import MAX_EXPERIENCE
+
 
 class UserExperienceLevel(models.Model):
     experience_from = models.FloatField()
@@ -18,9 +20,14 @@ class UserExperienceLevel(models.Model):
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, related_name='profile')
     photo = models.TextField()
-    experience = models.FloatField(default=0)
     balance = models.FloatField(default=0)
     experience_level = models.ForeignKey(UserExperienceLevel)
+
+    _experience = models.FloatField(default=0, db_column='experience')
+
+    @property
+    def experience(self):
+        return min(self._experience, MAX_EXPERIENCE)
 
     class Meta:
         db_table = 'user_profiles'
@@ -34,10 +41,11 @@ class UserProfile(models.Model):
         self.save()
 
     def add_experience(self, amount):
-        self.experience += amount
-        self.save()
+        if self.experience < MAX_EXPERIENCE:
+            self.experience += amount
+            self.save()
 
-        self.try_level_up()
+            self.try_level_up()
 
     def try_level_up(self):
         if self.experience >= self.experience_level.experience_till:
@@ -47,7 +55,11 @@ class UserProfile(models.Model):
         if self.experience == 0:
             experience_level = UserExperienceLevel.objects.get(experience_from=0)
         else:
-            experience_level = UserExperienceLevel.objects.filter(experience_from__gt=self.experience).order_by('-experience_from')[:1][0]
+            try:
+                experience_level = UserExperienceLevel.objects.filter(experience_from__lte=self.experience,
+                                                                      experience_till__gte=self.experience).order_by('-experience_from')[:1][0]
+            except IndexError:
+                return False
 
         self.experience_level = experience_level
         self.save()
