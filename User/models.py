@@ -42,7 +42,7 @@ class UserProfile(models.Model):
 
     def add_experience(self, amount):
         if self.experience < MAX_EXPERIENCE:
-            self.experience += amount
+            self._experience += amount
             self.save()
 
             self.try_level_up()
