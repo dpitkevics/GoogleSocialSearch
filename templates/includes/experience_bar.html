@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load mathfilters %}
+
+<div class="progress" data-toggle="tooltip" rel="tooltip" data-placement="bottom" id="experience-progress"
+     title="{% blocktrans with request.user.profile.get.experience as experience and request.user.profile.get.experience_level.experience_till as required_experience %}Experience: {{ experience }} out of {{ required_experience }}{% endblocktrans %}">
+    <div class="progress-bar" role="progressbar"
+         aria-valuenow="{{ 100|div:request.user.profile.get.experience_level.experience_till|mul:request.user.profile.get.experience }}"
+         aria-valuemin="0" aria-valuemax="100"
+         style="width: {{ 100|div:request.user.profile.get.experience_level.experience_till|mul:request.user.profile.get.experience }}%;">
+        {% blocktrans with 100|div:request.user.profile.get.experience_level.experience_till|mul:request.user.profile.get.experience|floatformat:2 as experience_percentage %}
+            {{ experience_percentage }}%
+        {% endblocktrans %}
+    </div>
+</div>

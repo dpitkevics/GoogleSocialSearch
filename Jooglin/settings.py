@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
     'guardian',
+    'mathfilters',
     'Jooglin',
     'Search',
     'User',
@@ -190,6 +191,12 @@ CURRENCY_SYMBOL = ''
 ITEM_VIEW_MULTIPLIER = 10
 ITEM_CLICK_MULTIPLIER = 15
 ITEM_VOTE_SCORE_MULTIPLIER = 30
+
+# Experience Configuration
+EXPERIENCE_UPDATE_AMOUNT_FOR_VIEW = 2
+EXPERIENCE_UPDATE_AMOUNT_FOR_CLICK = 4
+EXPERIENCE_UPDATE_AMOUNT_FOR_VOTE = 4
+EXPERIENCE_UPDATE_AMOUNT_FOR_COMMENT = 8
 
 # Groups configuration
 FIRST_LEVEL_GROUP_NAME = 'Basic'

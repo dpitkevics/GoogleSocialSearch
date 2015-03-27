@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.http.response import HttpResponse
 
 from User.lib.money import convert_to_money
@@ -14,3 +15,10 @@ def get_balance(request):
         balance = 0
 
     return HttpResponse(convert_to_money(balance))
+
+
+def get_experience(request):
+    if request.user.is_authenticated():
+        return render(request, 'includes/experience_bar.html', {})
+
+    return HttpResponse('')

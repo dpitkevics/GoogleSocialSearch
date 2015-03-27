@@ -267,6 +267,7 @@ def update_user(search_request, user):
 
         profile = user.profile.get()
         profile.add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_VIEW)
+        profile.add_experience(settings.EXPERIENCE_UPDATE_AMOUNT_FOR_VIEW)
 
 
 class SearchResult(object):

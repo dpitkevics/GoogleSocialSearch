@@ -21,6 +21,7 @@ $(function () {
                 });
 
                 refreshMessages();
+                refreshExperienceProgress();
             }
         });
 
@@ -53,6 +54,7 @@ $(function () {
 
                 refreshMessages();
                 refreshBalance();
+                refreshExperienceProgress();
             }
         });
 
@@ -60,12 +62,24 @@ $(function () {
     });
 });
 
+function refreshExperienceProgress()
+{
+    $.ajax({
+        'url': '/user/get-experience/',
+        'success': function (html) {
+            if (html.length > 5) {
+                $("#experience-progress").html(html);
+            }
+        }
+    });
+}
+
 function refreshMessages()
 {
     $.ajax({
         'url': '/flash-messages/',
         'success': function (html) {
-            $("#content").prepend(html);
+            $("#message-affix").html(html);
         }
     });
 }
@@ -108,6 +122,7 @@ function commentFormSubmit(form) {
 
             refreshMessages();
             refreshFullView();
+            refreshExperienceProgress();
         }
     });
 

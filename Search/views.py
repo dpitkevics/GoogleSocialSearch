@@ -115,6 +115,7 @@ def open_link(request, pk):
             search_item_clicks = SearchItemClick.objects.filter(search_item=search_item, user=request.user)
             if len(search_item_clicks) == 0:
                 request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_CLICK)
+                request.user.profile.get().add_experience(settings.EXPERIENCE_UPDATE_AMOUNT_FOR_CLICK)
 
             search_item_click = SearchItemClick()
             search_item_click.search_item = search_item
@@ -169,6 +170,7 @@ def vote(request):
             search_item_voter.save()
 
             request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_VOTE)
+            request.user.profile.get().add_experience(settings.EXPERIENCE_UPDATE_AMOUNT_FOR_VOTE)
 
             messages.add_message(request, messages.SUCCESS, 'Vote successfully added')
 
@@ -228,6 +230,7 @@ def add_comment(request):
                 search_item_comment.save()
 
                 request.user.profile.get().add_balance(settings.BALANCE_UPDATE_AMOUNT_FOR_COMMENT)
+                request.user.profile.get().add_experience(settings.EXPERIENCE_UPDATE_AMOUNT_FOR_COMMENT)
 
                 comment_form = CommentForm()
 

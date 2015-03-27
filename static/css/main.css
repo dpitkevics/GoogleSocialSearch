@@ -79,3 +79,8 @@ ul.typeahead.dropdown-menu a strong {
     background-color: #f2dede;
     border-color: #ebccd1;
 }
+
+#message-affix.affix {
+    z-index: 10;
+    width: 98%;
+}
