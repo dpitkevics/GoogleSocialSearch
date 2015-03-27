@@ -167,3 +167,11 @@ class SearchPlugin(models.Model):
 
     def __str__(self):
         return self.query
+
+
+class SearchItemFavourite(models.Model):
+    search_item = models.ForeignKey(SearchItem)
+    user = models.ForeignKey(User)
+
+    class Meta:
+        db_table = 'search_item_favourites'

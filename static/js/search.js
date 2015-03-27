@@ -60,6 +60,26 @@ $(function () {
 
         return false;
     });
+
+    body.on('click', '.favourite-btn', function () {
+        var button = $(this);
+        var url = button.attr('href');
+
+        $.ajax({
+            'url': url,
+            'success': function () {
+                var i = button.find('i');
+
+                if (i.hasClass('fa-heart-o')) {
+                    button.find('i').removeClass('fa-heart-o').addClass('fa-heart');
+                } else {
+                    button.find('i').removeClass('fa-heart').addClass('fa-heart-o');
+                }
+            }
+        });
+
+        return false;
+    });
 });
 
 function refreshExperienceProgress()

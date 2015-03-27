@@ -92,3 +92,7 @@ ul.typeahead.dropdown-menu a strong {
 #experience-progress {
     height: 5px;
 }
+
+.favourite-btn {
+    color: #bd291f;
+}

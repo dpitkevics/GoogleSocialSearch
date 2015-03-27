@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^comment/add/$', views.add_comment, name='add_comment'),
     url(r'^purchase/$', views.purchase, name='purchase'),
     url(r'^flash-messages/$', views.get_messages, name='get_messages'),
+    url(r'^favourite/(?P<srpk>.+)/$', views.favourite, name='favourite'),
 )

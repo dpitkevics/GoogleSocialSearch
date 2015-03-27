@@ -14,7 +14,7 @@ from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite
 from Search.lib.exceptions import PurchaseException
 from Search.lib.abstract_plugin import AbstractPlugin
 
@@ -312,3 +312,17 @@ def purchase(request):
 
 def get_messages(request):
     return render(request, 'includes/messages.html', {})
+
+
+def favourite(request, srpk):
+    try:
+        pk = num_decode(srpk)
+        search_item_favourite = SearchItemFavourite.objects.get(search_item_id=pk, user=request.user)
+        search_item_favourite.delete()
+    except ObjectDoesNotExist:
+        search_item_favourite = SearchItemFavourite()
+        search_item_favourite.search_item_id = pk
+        search_item_favourite.user = request.user
+        search_item_favourite.save()
+
+    return HttpResponse('')
