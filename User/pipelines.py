@@ -5,7 +5,7 @@ from social.backends.facebook import FacebookOAuth2
 from social.backends.linkedin import LinkedinOAuth
 from social.backends.twitter import TwitterOAuth
 
-from User.models import UserProfile, UserExperienceLevel
+from User.models import UserProfile
 
 from Jooglin import settings
 
@@ -60,7 +60,8 @@ def update_user_social_data(strategy, *args, **kwargs):
             profile.photo = image_url
             profile.save()
 
-    profile.level_up()
+    profile.experience_level_id = settings.DEFAULT_USER_LEVEL_ID
+    profile.save()
     user.save()
 
     group = Group.objects.get(name=settings.FIRST_LEVEL_GROUP_NAME)

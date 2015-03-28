@@ -21,7 +21,7 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, related_name='profile')
     photo = models.TextField()
     balance = models.FloatField(default=0)
-    experience_level = models.ForeignKey(UserExperienceLevel)
+    experience_level = models.ForeignKey(UserExperienceLevel, null=True)
 
     _experience = models.FloatField(default=0, db_column='experience')
 

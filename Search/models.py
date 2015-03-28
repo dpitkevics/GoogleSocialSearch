@@ -114,6 +114,13 @@ class SearchItem(models.Model):
         votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
         return item_price
 
+    def is_user_favourite(self, user):
+        try:
+            self.searchitemfavourite_set.filter(user=user)[0]
+            return True
+        except IndexError:
+            return False
+
 
 class SearchItemVoter(models.Model):
     VOTE_TYPE_UNKNOWN = 0
