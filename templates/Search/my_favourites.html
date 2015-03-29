@@ -1,0 +1,23 @@
+{% extends 'base_generic.html' %}
+
+{% load i18n %}
+
+{% block content %}
+    {% if search_item_favourites|length > 0 %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                {% for search_item_favourite in search_item_favourites %}
+                    {% include 'Search/includes/search_item.html' with item=search_item_favourite.search_item %}
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <p>
+                        {% trans "You have no favourites yet" %}
+                    </p>
+                </div>
+            </div>
+    {% endif %}
+{% endblock %}

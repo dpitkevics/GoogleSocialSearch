@@ -58,6 +58,9 @@
                             </a>
                         </li>
                         <li>
+                            <a href="{% url 'Search:my_favourites' %}">{% trans 'My Favourites' %}</a>
+                        </li>
+                        <li>
                             <a href="{% url 'auth:logout' %}?next={{ request.path }}"><i class="glyphicon glyphicon-off"></i> {% trans "Logout" %}</a>
                         </li>
                     {% else %}

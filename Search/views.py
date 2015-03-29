@@ -14,7 +14,7 @@ from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite, SearchRequest
 from Search.lib.exceptions import PurchaseException
 from Search.lib.abstract_plugin import AbstractPlugin
 
@@ -37,6 +37,19 @@ def index(request):
     }
 
     return render(request, 'Search/index.html', context)
+
+
+def my_favourites(request):
+    comment_form = CommentForm()
+
+    search_item_favourites = SearchItemFavourite.objects.filter(user=request.user)
+
+    context = {
+        'comment_form': comment_form,
+        'search_item_favourites': search_item_favourites
+    }
+
+    return render(request, 'Search/my_favourites.html', context)
 
 
 def load_search(request):
