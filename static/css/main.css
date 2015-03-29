@@ -96,3 +96,15 @@ ul.typeahead.dropdown-menu a strong {
 .favourite-btn {
     color: #bd291f;
 }
+
+.powered-by-google {
+    margin-top: 13px;
+}
+
+.experience-row {
+    margin-right: 0;
+}
+
+.experience-row > div {
+    padding-right: 0;
+}
