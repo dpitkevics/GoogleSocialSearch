@@ -100,3 +100,11 @@ ul.typeahead.dropdown-menu a strong {
 .powered-by-google {
     margin-top: 13px;
 }
+
+.experience-row {
+    margin-right: 0;
+}
+
+.experience-row > div {
+    padding-right: 0;
+}
