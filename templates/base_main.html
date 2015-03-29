@@ -38,7 +38,6 @@
                 <a class="navbar-brand" href="{% url 'Search:index' %}"><img alt="Brand" src="{% static 'images/social-search.png' %}"></a>
             </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     {% if user and not user.is_anonymous %}
