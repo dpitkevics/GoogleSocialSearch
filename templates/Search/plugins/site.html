@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="col-md-6 col-sm-12 text-right">
-                    {% blocktrans with item.owner.get_full_name|default:"None" as owner %}
+                    {% blocktrans with item.owner.get_full_name as owner %}
                         <i class="fa fa-user"></i> Owner: {{ owner }}
                     {% endblocktrans %}
                 </div>
