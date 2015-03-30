@@ -7,14 +7,13 @@ from django.contrib import messages
 from guardian.shortcuts import assign_perm, remove_perm
 
 import json
-from urllib.parse import unquote
 import html
 
 from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite, SearchRequest
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite
 from Search.lib.exceptions import PurchaseException
 from Search.lib.abstract_plugin import AbstractPlugin
 
@@ -328,8 +327,9 @@ def get_messages(request):
 
 
 def favourite(request, srpk):
+    pk = num_decode(srpk)
+
     try:
-        pk = num_decode(srpk)
         search_item_favourite = SearchItemFavourite.objects.get(search_item_id=pk, user=request.user)
         search_item_favourite.delete()
     except ObjectDoesNotExist:
