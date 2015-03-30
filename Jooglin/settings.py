@@ -204,6 +204,9 @@ MAX_EXPERIENCE = 2000
 FIRST_LEVEL_GROUP_NAME = 'Basic'
 SECOND_LEVEL_GROUP_NAME = 'Novice'
 
+# Pagination
+MAX_SEARCH_PAGES = 100
+
 try:
     from Jooglin.local_settings import *
 except ImportError:

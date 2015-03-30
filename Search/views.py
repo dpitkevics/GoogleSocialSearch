@@ -31,6 +31,22 @@ def index(request):
     else:
         form = SearchForm()
 
+    if 'p' in request.GET:
+        if 'query' in request.GET:
+            url = '/?query=%s' % request.GET['query']
+        else:
+            url = '/'
+
+        try:
+            page = int(request.GET['p'])
+        except ValueError:
+            messages.add_message(request, messages.ERROR, 'Invalid page parameter')
+            return HttpResponseRedirect(url)
+
+        if page > settings.MAX_SEARCH_PAGES:
+            messages.add_message(request, messages.ERROR, 'Chosen page exceeds page count')
+            return HttpResponseRedirect(url)
+
     context = {
         'form': form,
     }
