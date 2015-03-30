@@ -1,9 +1,6 @@
 {% load i18n %}
 {% load integers %}
 {% load voting %}
-{% load guardian_tags %}
-
-{% get_obj_perms request.user for item as "item_perms" %}
 
 <div id="item-full-view" data-srpk="{{ item.pk|num_encode }}">
 
@@ -96,7 +93,7 @@
 
             <div class="pull-right">
                 <div class="btn-group" role="group">
-                    {% if "owner" in item_perms %}
+                    {% if item.owner == request.user %}
                         <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
                             <i class="fa fa-money"></i>
                             {% trans 'Sell' %}

@@ -7,7 +7,7 @@
 
 {% get_obj_perms request.user for item as "item_perms" %}
 
-<div class="row search-result-item {% if "owner" in item_perms %}owners-result-item{% endif %}" id="{{ item.pk|num_encode }}">
+<div class="row search-result-item {% if item.owner == request.user %}owners-result-item{% endif %}" id="{{ item.pk|num_encode }}">
     <div class="col-md-1 col-sm-4 search-result-social text-center">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -65,10 +65,12 @@
                         {% trans 'View' %}
                     </a>
                     {% if "owner" in item_perms %}
-                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
-                            <i class="fa fa-money"></i>
-                            {% trans 'Sell' %}
-                        </a>
+                        {% if item.owner == request.user %}
+                            <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
+                                <i class="fa fa-money"></i>
+                                {% trans 'Sell' %}
+                            </a>
+                        {% endif %}
 
                         <a href="{% url 'user_admin:Search_searchitem_change' item.pk %}" class="btn btn-danger" target="_blank">
                             <i class="fa fa-wrench"></i>
