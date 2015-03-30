@@ -2,6 +2,7 @@ import requests
 import json
 from urllib.parse import quote
 import os
+from functools import lru_cache
 
 from django.core.exceptions import ObjectDoesNotExist
 from Jooglin.settings import BASE_DIR
