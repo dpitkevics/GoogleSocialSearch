@@ -1,7 +1,7 @@
 {% load integers %}
 {% load i18n %}
 
-{% if item.comments.all|length > 0 %}
+{% if item.comments.all|length > 1 %}
     <div id="carousel-comments-{{ item.pk|num_encode }}" class="carousel slide comment-carousel" data-ride="carousel">
         <!-- Indicators -->
 
@@ -23,6 +23,10 @@
             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             <span class="sr-only">Next</span>
         </a>
+    </div>
+{% elif item.comments.all|length == 1 %}
+    <div class="comment-carousel">
+        {% include 'Search/includes/comment.html' with item_comment=item.comments.all|first %}
     </div>
 {% else %}
     <p>{% trans "Be first to comment this search result!" %}</p>
