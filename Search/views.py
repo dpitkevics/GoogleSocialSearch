@@ -271,6 +271,9 @@ def add_comment(request):
             except ObjectDoesNotExist:
                 messages.add_message(request, messages.ERROR, 'Search item is not found')
                 return HttpResponse('')
+        else:
+            messages.add_message(request, messages.ERROR, "Comment cannot be empty")
+            return HttpResponse('')
 
     messages.add_message(request, messages.ERROR, "You are not authenticated")
     return HttpResponse('')
