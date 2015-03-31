@@ -54,7 +54,7 @@
 
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
-                            {% url 'Search:open' url=item.link|urlencode as item_url %}
+                            {% url 'Search:open' pk=item.pk|num_encode as item_url %}
                             {% blocktrans with item.link as link %}
                                 <i class="fa fa-link"></i> Search Link: <a href="{{ link }}" target="_blank" data-href="{{ item_url }}" onmousedown="makeHref($(this));">{{ link }}</a>
                             {% endblocktrans %}
