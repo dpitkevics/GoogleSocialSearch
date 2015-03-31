@@ -72,7 +72,7 @@ def my_favourites(request):
 def load_search(request):
     comment_form = CommentForm()
 
-    if 'query' in request.GET:
+    if 'query' in request.GET and len(request.GET['query']) > 0:
         form = SearchForm(request.GET)
 
         if 'p' in request.GET:
@@ -103,7 +103,6 @@ def load_search(request):
         search_result = None
         pagination = None
         search_plugin_instance = None
-
 
     context = {
         'form': form,
