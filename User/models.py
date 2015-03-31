@@ -63,3 +63,5 @@ class UserProfile(models.Model):
 
         self.experience_level = experience_level
         self.save()
+
+        self.experience_level.user_group.user_set.add(self.user)
