@@ -49,7 +49,7 @@ class SearchItem(models.Model):
     kind = models.CharField(max_length=256)
     title = models.CharField(max_length=256)
     html_title = models.CharField(max_length=256)
-    link = models.CharField(max_length=255, db_index=True)
+    link = models.CharField(max_length=512)
     display_link = models.CharField(max_length=256)
     snippet = models.CharField(max_length=512)
     html_snippet = models.CharField(max_length=1024)
