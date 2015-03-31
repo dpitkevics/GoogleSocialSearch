@@ -3,18 +3,18 @@ from django.http.response import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseRedirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from guardian.shortcuts import assign_perm, remove_perm
 
 import json
-from urllib.parse import unquote
 import html
 
 from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite, SearchRequest
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite
 from Search.lib.exceptions import PurchaseException
 from Search.lib.abstract_plugin import AbstractPlugin
 
@@ -32,6 +32,22 @@ def index(request):
     else:
         form = SearchForm()
 
+    if 'p' in request.GET:
+        if 'query' in request.GET:
+            url = '/?query=%s' % request.GET['query']
+        else:
+            url = '/'
+
+        try:
+            page = int(request.GET['p'])
+        except ValueError:
+            messages.add_message(request, messages.ERROR, 'Invalid page parameter')
+            return HttpResponseRedirect(url)
+
+        if page > settings.MAX_SEARCH_PAGES:
+            messages.add_message(request, messages.ERROR, 'Chosen page exceeds page count')
+            return HttpResponseRedirect(url)
+
     context = {
         'form': form,
     }
@@ -39,6 +55,7 @@ def index(request):
     return render(request, 'Search/index.html', context)
 
 
+@login_required(login_url='/login/facebook/?next=/my-favourites/')
 def my_favourites(request):
     comment_form = CommentForm()
 
@@ -55,7 +72,7 @@ def my_favourites(request):
 def load_search(request):
     comment_form = CommentForm()
 
-    if 'query' in request.GET:
+    if 'query' in request.GET and len(request.GET['query']) > 0:
         form = SearchForm(request.GET)
 
         if 'p' in request.GET:
@@ -86,7 +103,6 @@ def load_search(request):
         search_result = None
         pagination = None
         search_plugin_instance = None
-
 
     context = {
         'form': form,
@@ -256,6 +272,9 @@ def add_comment(request):
             except ObjectDoesNotExist:
                 messages.add_message(request, messages.ERROR, 'Search item is not found')
                 return HttpResponse('')
+        else:
+            messages.add_message(request, messages.ERROR, "Comment cannot be empty")
+            return HttpResponse('')
 
     messages.add_message(request, messages.ERROR, "You are not authenticated")
     return HttpResponse('')
@@ -328,8 +347,9 @@ def get_messages(request):
 
 
 def favourite(request, srpk):
+    pk = num_decode(srpk)
+
     try:
-        pk = num_decode(srpk)
         search_item_favourite = SearchItemFavourite.objects.get(search_item_id=pk, user=request.user)
         search_item_favourite.delete()
     except ObjectDoesNotExist:

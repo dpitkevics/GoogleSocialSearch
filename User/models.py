@@ -5,8 +5,8 @@ from Jooglin.settings import MAX_EXPERIENCE
 
 
 class UserExperienceLevel(models.Model):
-    experience_from = models.FloatField()
-    experience_till = models.FloatField()
+    experience_from = models.FloatField(db_index=True)
+    experience_till = models.FloatField(db_index=True)
     title = models.CharField(max_length=64)
     user_group = models.ForeignKey(Group)
 

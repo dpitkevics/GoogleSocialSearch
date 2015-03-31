@@ -11,7 +11,7 @@ class SearchRequest(models.Model):
     search_time = models.FloatField(default=0)
     total_results = models.BigIntegerField(default=0)
     title = models.CharField(max_length=256)
-    search_terms = models.CharField(max_length=512)
+    search_terms = models.CharField(max_length=255, db_index=True)
     start_index = models.IntegerField(default=1)
     input_encoding = models.CharField(max_length=8, default='utf8')
     output_encoding = models.CharField(max_length=8, default='utf8')
@@ -49,7 +49,7 @@ class SearchItem(models.Model):
     kind = models.CharField(max_length=256)
     title = models.CharField(max_length=256)
     html_title = models.CharField(max_length=256)
-    link = models.CharField(max_length=256)
+    link = models.CharField(max_length=512)
     display_link = models.CharField(max_length=256)
     snippet = models.CharField(max_length=512)
     html_snippet = models.CharField(max_length=1024)
@@ -165,7 +165,7 @@ class SearchItemView(models.Model):
 
 
 class SearchPlugin(models.Model):
-    query = models.CharField(max_length=512)
+    query = models.CharField(max_length=255, db_index=True)
     package = models.CharField(max_length=256)
     class_name = models.CharField(max_length=128)
 
