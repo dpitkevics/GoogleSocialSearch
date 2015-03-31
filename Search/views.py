@@ -3,6 +3,7 @@ from django.http.response import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseRedirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from guardian.shortcuts import assign_perm, remove_perm
 
@@ -54,6 +55,7 @@ def index(request):
     return render(request, 'Search/index.html', context)
 
 
+@login_required(login_url='/login/facebook/?next=/my-favourites/')
 def my_favourites(request):
     comment_form = CommentForm()
 
