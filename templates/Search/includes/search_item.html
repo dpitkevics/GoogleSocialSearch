@@ -53,7 +53,7 @@
 
         <div class="row">
             <div class="col-md-12 col-sm-12">
-                {% trans 'Found in:' %} <span class="text-info">{{ item.formatted_url }}</span>
+                {% trans 'Found in:' %} <a href="{{ item.formatted_url }}" class="text-info" target="_blank">{{ item.formatted_url }}</a>
             </div>
         </div>
 

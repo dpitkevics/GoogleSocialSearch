@@ -95,6 +95,11 @@ ul.typeahead.dropdown-menu a strong {
 
 .favourite-btn {
     color: #bd291f;
+    text-decoration: none;
+}
+
+.favourite-btn:hover, .favourite-btn:active, .favourite-btn:focus {
+    text-decoration: none;
 }
 
 .powered-by-google {
