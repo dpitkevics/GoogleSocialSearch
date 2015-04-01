@@ -195,3 +195,18 @@ class SearchItemFavourite(models.Model):
 
     class Meta:
         db_table = 'search_item_favourites'
+
+
+class SearchItemOffer(models.Model):
+    OFFER_STATUS_PENDING = 0
+    OFFER_STATUS_ACCEPTED = 1
+    OFFER_STATUS_DECLINED = 2
+
+    search_item = models.ForeignKey(SearchItem)
+    user = models.ForeignKey(User)
+    offered_amount = models.FloatField()
+    offer_date = models.DateTimeField(auto_now_add=True)
+    offer_status = models.IntegerField(default=OFFER_STATUS_PENDING)
+
+    class Meta:
+        db_table = 'search_item_offers'

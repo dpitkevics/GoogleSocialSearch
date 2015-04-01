@@ -1,0 +1,77 @@
+{% extends 'base_generic.html' %}
+
+{% load i18n %}
+{% load templating %}
+{% load integers %}
+
+{% block title %}{% trans 'My Offers' as title %}{% title title %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h2>{% trans 'I am Offered' %}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            {% if offers_to_me|length > 0 %}
+                {% for offer_to_me in offers_to_me %}
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-danger">{% trans 'Remove Offer' %}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            {% include 'Search/includes/search_item.html' with item=offer_to_me.search_item %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>{% trans 'You have no offers yet' %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h2>{% trans 'My Offers' %}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            {% if my_offers|length > 0 %}
+                {% for my_offer in my_offers %}
+                    <div class="row">
+                        <div class="col-md-1 col-sm-2 text-center">
+                            <div class="btn-group">
+                                <a href="{% url 'Search:offer_action' %}?method=remove&opk={{ my_offer.pk|num_encode }}" class="btn btn-danger remove-offer-btn">{% trans 'Remove Offer' %}</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-11 col-sm-10">
+                            <h4>
+                                {% blocktrans with my_offer.offered_amount as offered_amount %}
+                                    You offered <i class="fa fa-money"></i> {{ offered_amount }} in this trade
+                                {% endblocktrans %}
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            {% include 'Search/includes/search_item.html' with item=my_offer.search_item %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>{% trans 'You have made no offers yet' %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

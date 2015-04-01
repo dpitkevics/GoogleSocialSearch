@@ -82,11 +82,36 @@
                             {% trans 'Administrate' %}
                         </a>
                     {% else %}
-                        <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
-                            <i class="fa fa-shopping-cart"></i>
-                            {% trans 'Buy' %}
-                        </a>
+                        {% if item.owner == None %}
+                            <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
+                                <i class="fa fa-shopping-cart"></i>
+                                {% trans 'Buy' %}
+                            </a>
+                        {% else %}
+                            <a href="#offer-form-{{ item.pk|num_encode }}" class="btn btn-info offer-btn" data-toggle="collapse" aria-expanded="false" aria-controls="offer-form-{{ item.pk|num_encode }}">
+                                <i class="fa fa-ticket"></i>
+                                {% trans 'Buy Offer' %}
+                            </a>
+                        {% endif %}
                     {% endif %}
+                </div>
+
+                <div class="collapse margin-top" id="offer-form-{{ item.pk|num_encode }}">
+                    <form action="{% url 'Search:offer' %}" method="post" onsubmit="return makeOfferFormSubmit($(this))">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <input placeholder="{% trans 'Amount' %}" type="text" class="form-control" name="amount" id="amount" />
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                                <input type="submit" class="btn btn-success" value="{% trans 'Make an offer' %}" />
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="srpk" value="{{ item.pk|num_encode }}" />
+                    </form>
                 </div>
             </div>
         </div>

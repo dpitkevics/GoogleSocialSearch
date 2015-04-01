@@ -61,6 +61,20 @@ $(function () {
         return false;
     });
 
+    body.on('click', '.remove-offer-btn', function () {
+        var button = $(this);
+        var url = button.attr('href');
+
+        $.ajax({
+            'url': url,
+            'success': function () {
+                window.location.reload();
+            }
+        });
+
+        return false;
+    });
+
     body.on('click', '.favourite-btn', function () {
         var button = $(this);
         var url = button.attr('href');
@@ -143,6 +157,21 @@ function commentFormSubmit(form) {
             refreshMessages();
             refreshFullView();
             refreshExperienceProgress();
+        }
+    });
+
+    return false;
+}
+
+function makeOfferFormSubmit(form) {
+    $.ajax({
+        'url': form.attr('action'),
+        'type': 'post',
+        'data': form.serialize(),
+        'success': function () {
+            form.find('#amount').val('');
+
+            refreshMessages();
         }
     });
 

@@ -16,8 +16,8 @@ from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite
-from Search.lib.exceptions import PurchaseException
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite, SearchItemOffer
+from Search.lib.exceptions import PurchaseException, OfferException
 from Search.lib.abstract_plugin import AbstractPlugin
 
 from Comments.models import Comment
@@ -83,6 +83,21 @@ def my_items(request):
     }
 
     return render(request, 'Search/my_items.html', context)
+
+
+@login_required(login_url='/login/facebook/?next=/my-offers/')
+def my_offers(request):
+    my_offer_list = SearchItemOffer.objects.filter(user=request.user)
+
+    search_items = SearchItem.objects.filter(owner=request.user)
+    offers_to_me = SearchItemOffer.objects.filter(search_item__in=search_items)
+
+    context = {
+        'my_offers': my_offer_list,
+        'offers_to_me': offers_to_me
+    }
+
+    return render(request, 'Search/my_offers.html', context)
 
 
 def load_search(request):
@@ -361,6 +376,81 @@ def purchase(request):
     except ObjectDoesNotExist:
         raise PurchaseException('Search item is not found')
     except PurchaseException as e:
+        messages.add_message(request, messages.ERROR, e.message)
+        return HttpResponse('')
+
+
+def offer(request):
+    if not request.user.is_authenticated():
+        messages.add_message(request, messages.ERROR, 'You are not authenticated')
+        return HttpResponse('')
+
+    try:
+        pk = num_decode(request.POST['srpk'])
+        search_item = SearchItem.objects.get(pk=pk)
+
+        profile = request.user.profile.get()
+        balance = profile.balance
+
+        try:
+            offered_money = float(request.POST['amount'])
+        except ValueError:
+            raise PurchaseException('Entered amount is invalid')
+
+        if offered_money < 1:
+            raise PurchaseException('Your offer amount should be at least 1')
+
+        if not request.user.has_perm('Search.can_buy'):
+            raise PurchaseException('You have no permissions to buy an item')
+
+        if search_item.owner is None:
+            raise PurchaseException('Selected item does not have an owner')
+
+        if offered_money > balance:
+            raise PurchaseException('Offered money exceeds Your balance')
+
+        search_item_offer = SearchItemOffer()
+        search_item_offer.search_item = search_item
+        search_item_offer.user = request.user
+        search_item_offer.offered_amount = offered_money
+        search_item_offer.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Offer successfully made')
+        return HttpResponse('')
+    except IndexError:
+        raise PurchaseException('Search item is not found')
+    except ObjectDoesNotExist:
+        raise PurchaseException('Search item is not found')
+    except PurchaseException as e:
+        messages.add_message(request, messages.ERROR, e.message)
+        return HttpResponse('')
+
+
+def offer_action(request):
+    if not request.user.is_authenticated():
+        messages.add_message(request, messages.ERROR, 'You are not authenticated')
+        return HttpResponse('')
+
+    try:
+        pk = num_decode(request.GET['opk'])
+        search_item_offer = SearchItemOffer.objects.get(pk=pk)
+
+        if search_item_offer.user != request.user and search_item_offer.search_item.owner != request.user:
+            raise OfferException('You are not allowed to manipulate this offer')
+
+        if request.GET['method'] == 'remove':
+            if search_item_offer.user != request.user:
+                raise OfferException('You cannot remove offers made by other user')
+
+            search_item_offer.delete()
+
+            messages.add_message(request, messages.SUCCESS, 'Offer successfully removed')
+            return HttpResponse('')
+    except IndexError:
+        raise OfferException('Offer not found')
+    except ObjectDoesNotExist:
+        raise OfferException('Offer not found')
+    except OfferException as e:
         messages.add_message(request, messages.ERROR, e.message)
         return HttpResponse('')
 
