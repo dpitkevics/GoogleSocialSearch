@@ -87,12 +87,15 @@ def my_items(request):
 
 @login_required(login_url='/login/facebook/?next=/my-offers/')
 def my_offers(request):
-    my_offer_list = SearchItemOffer.objects.filter(user=request.user)
+    comment_form = CommentForm()
+
+    my_offer_list = SearchItemOffer.objects.filter(user=request.user).order_by('-offer_date')
 
     search_items = SearchItem.objects.filter(owner=request.user)
-    offers_to_me = SearchItemOffer.objects.filter(search_item__in=search_items)
+    offers_to_me = SearchItemOffer.objects.filter(search_item__in=search_items, offer_status=SearchItemOffer.OFFER_STATUS_PENDING).order_by('-offer_date')
 
     context = {
+        'comment_form': comment_form,
         'my_offers': my_offer_list,
         'offers_to_me': offers_to_me
     }
@@ -446,6 +449,38 @@ def offer_action(request):
 
             messages.add_message(request, messages.SUCCESS, 'Offer successfully removed')
             return HttpResponse('')
+        elif request.GET['method'] == 'accept':
+            if search_item_offer.search_item.owner != request.user:
+                raise OfferException('You cannot accept other user offers')
+
+            profile = request.user.profile.get()
+
+            offerers_profile = search_item_offer.user.profile.get()
+            offerers_balance = offerers_profile.balance
+            if offerers_balance < search_item_offer.offered_amount:
+                raise OfferException('Balance for user who made this offer, is now less than offered amount')
+
+            offerers_profile.remove_balance(search_item_offer.offered_amount)
+            profile.add_balance(search_item_offer.offered_amount)
+
+            search_item = search_item_offer.search_item
+            search_item.owner = search_item_offer.user
+            search_item.save()
+
+            search_item_offer.offer_status = search_item_offer.OFFER_STATUS_ACCEPTED
+            search_item_offer.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Offer successfully accepted')
+            return HttpResponse('')
+        elif request.GET['method'] == 'decline':
+            if search_item_offer.search_item.owner != request.user:
+                raise OfferException('You cannot decline other user offers')
+
+            search_item_offer.offer_status = search_item_offer.OFFER_STATUS_DECLINED
+            search_item_offer.save()
+
+            messages.add_message(request, messages.SUCCESS, 'Offer successfully declined')
+            return HttpResponse('')
     except IndexError:
         raise OfferException('Offer not found')
     except ObjectDoesNotExist:
@@ -453,6 +488,8 @@ def offer_action(request):
     except OfferException as e:
         messages.add_message(request, messages.ERROR, e.message)
         return HttpResponse('')
+
+    return HttpResponse('')
 
 
 def get_messages(request):

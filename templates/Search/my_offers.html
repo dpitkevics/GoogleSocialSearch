@@ -18,14 +18,23 @@
             {% if offers_to_me|length > 0 %}
                 {% for offer_to_me in offers_to_me %}
                     <div class="row">
-                        <div class="col-md-12 col-sm-12">
+                        <div class="col-md-2 col-sm-4">
                             <div class="btn-group">
-                                <a href="#" class="btn btn-danger">{% trans 'Remove Offer' %}</a>
+                                <a href="{% url 'Search:offer_action' %}?method=accept&opk={{ offer_to_me.pk|num_encode }}" class="btn btn-success offer-accept-btn">{% trans 'Accept' %}</a>
+                                <a href="{% url 'Search:offer_action' %}?method=decline&opk={{ offer_to_me.pk|num_encode }}" class="btn btn-danger offer-decline-btn">{% trans 'Decline' %}</a>
                             </div>
+                        </div>
+
+                        <div class="col-md-10 col-sm-8">
+                            <h4>
+                                {% blocktrans with offer_to_me.offered_amount as offered_amount %}
+                                    You are offered to sell this item for <i class="fa fa-money"></i> {{ offered_amount }}
+                                {% endblocktrans %}
+                            </h4>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row margin-top">
                         <div class="col-md-12 col-sm-12">
                             {% include 'Search/includes/search_item.html' with item=offer_to_me.search_item %}
                         </div>

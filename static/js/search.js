@@ -61,7 +61,7 @@ $(function () {
         return false;
     });
 
-    body.on('click', '.remove-offer-btn', function () {
+    body.on('click', '.remove-offer-btn, .offer-accept-btn, .offer-decline-btn', function () {
         var button = $(this);
         var url = button.attr('href');
 

@@ -64,24 +64,18 @@
                         <i class="fa fa-info-circle"></i>
                         {% trans 'View' %}
                     </a>
-                    {% if "owner" in item_perms %}
-                        {% if item.owner == request.user %}
-                            <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}"
-                               class="btn btn-info purchase-btn"
-                               {% if not item.is_sell_date_valid %}
-                               data-toggle="tooltip" rel="tooltip" data-placement="top"
-                               title="{% trans 'You must own an item at least 30 days to sell it.' %}"
-                               {% endif %}>
-                                <i class="fa fa-money"></i>
-                                {% trans 'Sell' %}
-                            </a>
-                        {% endif %}
 
-                        <a href="{% url 'user_admin:Search_searchitem_change' item.pk %}" class="btn btn-danger" target="_blank">
-                            <i class="fa fa-wrench"></i>
-                            {% trans 'Administrate' %}
+                    {% if item.owner == request.user %}
+                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}"
+                           class="btn btn-info purchase-btn"
+                           {% if not item.is_sell_date_valid %}
+                           data-toggle="tooltip" rel="tooltip" data-placement="top"
+                           title="{% trans 'You must own an item at least 30 days to sell it.' %}"
+                           {% endif %}>
+                            <i class="fa fa-money"></i>
+                            {% trans 'Sell' %}
                         </a>
-                    {% else %}
+                   {% else %}
                         {% if item.owner == None %}
                             <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
                                 <i class="fa fa-shopping-cart"></i>
@@ -93,6 +87,13 @@
                                 {% trans 'Buy Offer' %}
                             </a>
                         {% endif %}
+                    {% endif %}
+
+                    {% if "owner" in item_perms %}
+                        <a href="{% url 'user_admin:Search_searchitem_change' item.pk %}" class="btn btn-danger" target="_blank">
+                            <i class="fa fa-wrench"></i>
+                            {% trans 'Administrate' %}
+                        </a>
                     {% endif %}
                 </div>
 
