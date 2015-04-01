@@ -1,6 +1,9 @@
 {% extends 'base_generic.html' %}
 
 {% load i18n %}
+{% load templating %}
+
+{% block title %}{% trans 'My Favourites' as title %}{% title title %}{% endblock %}
 
 {% block content %}
     {% if search_item_favourites|length > 0 %}
