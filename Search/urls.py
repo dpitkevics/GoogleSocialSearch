@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r'^flash-messages/$', views.get_messages, name='get_messages'),
     url(r'^favourite/(?P<srpk>.+)/$', views.favourite, name='favourite'),
     url(r'^my-favourites/$', views.my_favourites, name='my_favourites'),
+    url(r'^my-items/$', views.my_items, name='my_items'),
 )

@@ -69,6 +69,20 @@ def my_favourites(request):
     return render(request, 'Search/my_favourites.html', context)
 
 
+@login_required(login_url='/login/facebook/?next=/my-items/')
+def my_items(request):
+    comment_form = CommentForm()
+
+    my_search_items = SearchItem.objects.filter(owner=request.user)
+
+    context = {
+        'comment_form': comment_form,
+        'search_items': my_search_items
+    }
+
+    return render(request, 'Search/my_items.html', context)
+
+
 def load_search(request):
     comment_form = CommentForm()
 
