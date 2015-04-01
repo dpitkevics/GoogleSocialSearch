@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.http.response import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponseNotFound
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from django.utils.timezone import datetime, timedelta
+from django.utils.timezone import datetime
 
 from guardian.shortcuts import assign_perm, remove_perm
 
@@ -382,3 +382,7 @@ def favourite(request, srpk):
         search_item_favourite.save()
 
     return HttpResponse('')
+
+
+def error404(request):
+    return HttpResponseNotFound(render_to_response('404.html'))

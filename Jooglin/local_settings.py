@@ -1,6 +1,8 @@
 from Jooglin.settings import *
 
 DEBUG = True
+# DEBUG = False
+# ALLOWED_HOSTS = ['*']
 
 DEFAULT_USER_LEVEL_ID = 1
 

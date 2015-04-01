@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url('', include('django.contrib.auth.urls', namespace='auth')),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_URL)
 
+handler404 = "Search.views.error404"
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += patterns('',
