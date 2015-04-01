@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from datetime import date, timedelta
 
@@ -63,6 +64,7 @@ class SearchItem(models.Model):
     downvote_count = models.IntegerField(default=0)
     owner = models.ForeignKey(User, null=True)
     owner_comment = models.TextField(null=True)
+    owner_updated_at = models.DateTimeField(null=True)
 
     search_request = models.ManyToManyField(SearchRequest)
 
@@ -120,6 +122,17 @@ class SearchItem(models.Model):
             return True
         except IndexError:
             return False
+
+    def is_sell_date_valid(self):
+        available_for_sell_date = self.sell_date()
+        if timezone.now() < available_for_sell_date:
+            return False
+
+        return True
+
+    def sell_date(self):
+        available_for_sell_date = self.owner_updated_at + timedelta(days=30)
+        return available_for_sell_date
 
 
 class SearchItemVoter(models.Model):

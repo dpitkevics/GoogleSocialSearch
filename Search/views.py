@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.utils.timezone import datetime, timedelta
 
 from guardian.shortcuts import assign_perm, remove_perm
 
@@ -322,12 +324,18 @@ def purchase(request):
             profile.remove_balance(item_price)
 
             search_item.owner = request.user
+            search_item.owner_updated_at = timezone.now()
             search_item.save()
 
             assign_perm('owner', request.user, search_item)
 
             messages.add_message(request, messages.SUCCESS, 'Item successfully bought')
         elif request.GET['method'] == 'sell':
+            if not search_item.is_sell_date_valid():
+                raise PurchaseException(
+                    'You must own an item at least 30 days to sell it. This item will be open for selling on %s' % search_item.sell_date().strftime(
+                        "%d.%m.%Y %H:%M"))
+
             if not request.user.has_perm('Search.can_sell'):
                 raise PurchaseException('You have no permissions to sell an item')
 
@@ -335,6 +343,7 @@ def purchase(request):
                 raise PurchaseException('You are not the owner of this item')
 
             search_item.owner = None
+            search_item.owner_updated_at = datetime.now()
             search_item.save()
 
             profile.add_balance(item_price)
