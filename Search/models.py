@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db import connection
 
 from datetime import date, timedelta
 
 from Comments.models import Comment
 from Jooglin import settings
+from Jooglin.lib.database import dictfetchall
 
 
 class SearchRequest(models.Model):
@@ -23,13 +25,14 @@ class SearchRequest(models.Model):
     class Meta:
         db_table = 'search_requests'
 
-    def update_items_views(self, user=None):
+    def update_items_views(self, user=None, ip_address=None):
         for search_item in self.searchitem_set.all():
             search_item.add_view()
 
             search_item_view = SearchItemView()
             search_item_view.search_item = search_item
             search_item_view.user = user
+            search_item_view.ip_address = ip_address
             search_item_view.save()
 
 
@@ -103,8 +106,38 @@ class SearchItem(models.Model):
         return self.get_vote_score() + self.click_count + self.view_count
 
     def get_price(self):
-        views = SearchItemView.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self)
-        clicks = SearchItemClick.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self)
+        cursor = connection.cursor()
+
+        # Retrieving view count
+        sql = "SELECT LEAST(COUNT(*), %s) AS view_count FROM search_item_views AS siv " \
+              "JOIN search_items AS si ON siv.search_item_id = si.id " \
+              "WHERE siv.created_at >= NOW() - INTERVAL 1 MONTH " \
+              "AND siv.search_item_id = %s " \
+              "AND si.owner_id != siv.user_id " \
+              "GROUP BY siv.ip_address, DATE(siv.created_at)"
+
+        cursor.execute(sql, [settings.MAX_VIEWS_PER_IP_PER_DAY, self.pk])
+        rows = dictfetchall(cursor)
+
+        view_count = 0
+        for row in rows:
+            view_count += row['view_count']
+
+        # Retrieving click count
+        sql = "SELECT LEAST(COUNT(*), %s) AS click_count FROM search_item_clicks AS sic " \
+              "JOIN search_items AS si ON sic.search_item_id = si.id " \
+              "WHERE sic.created_at >= NOW() - INTERVAL 1 MONTH " \
+              "AND sic.search_item_id = %s " \
+              "AND si.owner_id != sic.user_id " \
+              "GROUP BY sic.ip_address, DATE(sic.created_at)"
+
+        cursor.execute(sql, [settings.MAX_CLICKS_PER_IP_PER_DAY, self.pk])
+        rows = dictfetchall(cursor)
+
+        click_count = 0
+        for row in rows:
+            click_count += row['click_count']
+
         upvotes = SearchItemVoter.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self,
                                                  vote_type=SearchItemVoter.VOTE_TYPE_UP)
         downvotes = SearchItemVoter.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self,
@@ -112,8 +145,8 @@ class SearchItem(models.Model):
 
         votes_count = len(upvotes) - len(downvotes)
 
-        item_price = (len(views) * settings.ITEM_VIEW_MULTIPLIER) + (len(clicks) * settings.ITEM_CLICK_MULTIPLIER) + (
-        votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
+        item_price = (view_count * settings.ITEM_VIEW_MULTIPLIER) + (click_count * settings.ITEM_CLICK_MULTIPLIER) + (
+            votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
         return item_price
 
     def is_user_favourite(self, user):
@@ -163,6 +196,7 @@ class SearchItemClick(models.Model):
     search_item = models.ForeignKey(SearchItem)
     user = models.ForeignKey(User, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.CharField(max_length=32, null=True)
 
     class Meta:
         db_table = 'search_item_clicks'
@@ -172,6 +206,7 @@ class SearchItemView(models.Model):
     search_item = models.ForeignKey(SearchItem)
     user = models.ForeignKey(User, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.CharField(max_length=32, null=True)
 
     class Meta:
         db_table = 'search_item_views'

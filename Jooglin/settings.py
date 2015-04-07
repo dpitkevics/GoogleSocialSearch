@@ -139,6 +139,10 @@ TEMPLATES = [
     },
 ]
 
+# Search Configuration
+MAX_VIEWS_PER_IP_PER_DAY = 5
+MAX_CLICKS_PER_IP_PER_DAY = 5
+
 # Google Api Configuration
 API_KEY = 'AIzaSyBrM670Tag_vNzs7Ld66Cev43wbVbmd0DU'
 API_SEARCH_CX = '011767239663903188113:jx6ffcypnqs'

@@ -184,6 +184,7 @@ def open_link(request, pk):
             search_item_click = SearchItemClick()
             search_item_click.search_item = search_item
             search_item_click.user = request.user
+            search_item_click.ip_address = get_client_ip(request)
             search_item_click.save()
 
         return HttpResponseRedirect(search_item.link)
