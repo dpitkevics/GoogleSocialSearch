@@ -117,3 +117,12 @@ ul.typeahead.dropdown-menu a strong {
 .light-bold {
     font-weight: 600;
 }
+
+.link-iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 190px;
+    z-index: 15;
+    background: #2b3e50;
+}

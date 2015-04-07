@@ -112,7 +112,7 @@ $(function () {
 
 function openLinkInIframe(anchor)
 {
-    var iframe = $('<iframe src="'+anchor.attr('href')+'"></iframe>');
+    var iframe = $('<iframe src="'+anchor.attr('href')+'" class="link-iframe"></iframe>');
 
     var body = $('body');
 
