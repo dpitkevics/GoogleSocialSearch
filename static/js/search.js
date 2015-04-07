@@ -110,6 +110,17 @@ $(function () {
     });
 });
 
+function openLinkInIframe(anchor)
+{
+    var iframe = $('<iframe src="'+anchor.attr('href')+'"></iframe>');
+
+    var body = $('body');
+
+    body.prepend(iframe);
+
+    return false;
+}
+
 function refreshExperienceProgress()
 {
     $.ajax({

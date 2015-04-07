@@ -22,6 +22,7 @@ class UserProfile(models.Model):
     photo = models.TextField()
     balance = models.FloatField(default=0)
     experience_level = models.ForeignKey(UserExperienceLevel, null=True)
+    is_link_view_in_iframe = models.BooleanField(default=False)
 
     _experience = models.FloatField(default=0, db_column='experience')
 
