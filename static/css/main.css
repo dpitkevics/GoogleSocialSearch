@@ -113,3 +113,7 @@ ul.typeahead.dropdown-menu a strong {
 .experience-row > div {
     padding-right: 0;
 }
+
+.light-bold {
+    font-weight: 600;
+}
