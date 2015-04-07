@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^my-items/$', views.my_items, name='my_items'),
     url(r'^my-offers/$', views.my_offers, name='my_offers'),
     url(r'^offer-action/$', views.offer_action, name='offer_action'),
+    url(r'^report-comment/(?P<cpk>.+)/$', views.report_comment, name='report_comment'),
 )

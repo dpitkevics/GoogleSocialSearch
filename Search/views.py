@@ -16,7 +16,8 @@ from Search.forms import SearchForm
 from Search.lib import search
 from Search.lib import suggestions
 from Search.lib.pagination import Pagination
-from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite, SearchItemOffer
+from Search.models import SearchItem, SearchItemVoter, SearchItemComments, SearchItemClick, SearchItemFavourite
+from Search.models import SearchItemOffer, SearchItemCommentReport
 from Search.lib.exceptions import PurchaseException, OfferException
 from Search.lib.abstract_plugin import AbstractPlugin
 
@@ -507,6 +508,23 @@ def favourite(request, srpk):
         search_item_favourite.search_item_id = pk
         search_item_favourite.user = request.user
         search_item_favourite.save()
+
+    return HttpResponse('')
+
+
+def report_comment(request, cpk):
+    pk = num_decode(cpk)
+
+    try:
+        search_item_comment = SearchItemComments.objects.get(pk=pk)
+
+        search_item_comment_report = SearchItemCommentReport()
+        search_item_comment_report.search_item_comment = search_item_comment
+        search_item_comment_report.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Comment successfully reported. Our administration will process this report as soon as possible.')
+    except ObjectDoesNotExist:
+        messages.add_message(request, messages.ERROR, 'Comment not found')
 
     return HttpResponse('')
 

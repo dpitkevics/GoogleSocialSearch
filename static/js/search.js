@@ -75,6 +75,20 @@ $(function () {
         return false;
     });
 
+    body.on('click', '.report-comment-btn', function () {
+        var button = $(this);
+        var url = button.attr('href');
+
+        $.ajax({
+            'url': url,
+            'success': function () {
+                refreshMessages();
+            }
+        });
+
+        return false;
+    });
+
     body.on('click', '.favourite-btn', function () {
         var button = $(this);
         var url = button.attr('href');

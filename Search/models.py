@@ -210,3 +210,11 @@ class SearchItemOffer(models.Model):
 
     class Meta:
         db_table = 'search_item_offers'
+
+
+class SearchItemCommentReport(models.Model):
+    search_item_comment = models.ForeignKey(SearchItemComments)
+    reported_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'search_item_comment_reports'

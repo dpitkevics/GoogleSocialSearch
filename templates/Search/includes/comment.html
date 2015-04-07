@@ -1,3 +1,6 @@
+{% load i18n %}
+{% load integers %}
+
 <div class="well well-sm well-no-margin-bottom">
     <div class="row">
         <div class="col-md-2 col-sm-6">
@@ -8,12 +11,19 @@
 
         <div class="col-md-10 col-sm-6">
             <div class="row">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-4 col-sm-12">
                     {{ item_comment.comment.user }}
                 </div>
 
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-4 col-sm-12">
                     {{ item_comment.comment.submit_date|date:"M d, Y H:i" }}
+                </div>
+
+                <div class="col-md-4 col-sm-12 text-right">
+                    <a href="{% url 'Search:report_comment' cpk=item_comment.pk|num_encode %}" class="report-comment-btn">
+                        <i class="fa fa-ban"></i>
+                        {% trans 'Report' %}
+                    </a>
                 </div>
             </div>
 
