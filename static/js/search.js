@@ -112,13 +112,73 @@ $(function () {
 
 function openLinkInIframe(anchor)
 {
+    var rowDiv = $('<div class="row" id="iframe-row"></div>');
+    var colDiv = $('<div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1"></div>');
+
+    var calculatedHeight = $(window).height() - 145;
+
+    colDiv.height(calculatedHeight);
+
     var iframe = $('<iframe src="'+anchor.attr('href')+'" class="link-iframe"></iframe>');
+    iframe.height(calculatedHeight - 40);
 
     var body = $('body');
 
-    body.prepend(iframe);
+    colDiv.append(iframe);
+    rowDiv.append(colDiv);
+    body.prepend(rowDiv);
+
+    var navigationRow = $('<div class="row" id="navigation-row"></div>');
+    var navigationCol = $('<div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1"></div>');
+    var buttonGroup = $('<div class="btn-group"></div>');
+    var closeButton = $('<a href="#" class="btn btn-default">Close</a>');
+    closeButton.bind('click', function () {
+        $("#iframe-row").remove();
+
+        unlockScroll();
+
+        return false;
+    });
+
+    buttonGroup.append(closeButton);
+    navigationCol.append(buttonGroup);
+    navigationRow.append(navigationCol);
+
+    colDiv.prepend(navigationRow);
+
+    lockScroll();
 
     return false;
+}
+
+function lockScroll(){
+    var $html = $('html');
+    var $body = $('body');
+    var initWidth = $body.outerWidth();
+    var initHeight = $body.outerHeight();
+
+    var scrollPosition = [
+        self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+        self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+    ];
+    $html.data('scroll-position', scrollPosition);
+    $html.data('previous-overflow', $html.css('overflow'));
+    $html.css('overflow', 'hidden');
+    window.scrollTo(scrollPosition[0], scrollPosition[1]);
+
+    var marginR = $body.outerWidth()-initWidth;
+    var marginB = $body.outerHeight()-initHeight;
+    $body.css({'margin-right': marginR,'margin-bottom': marginB});
+}
+
+function unlockScroll(){
+    var $html = $('html');
+    var $body = $('body');
+    $html.css('overflow', $html.data('previous-overflow'));
+    var scrollPosition = $html.data('scroll-position');
+    window.scrollTo(scrollPosition[0], scrollPosition[1]);
+
+    $body.css({'margin-right': 0, 'margin-bottom': 0});
 }
 
 function refreshExperienceProgress()
