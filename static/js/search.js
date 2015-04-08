@@ -108,14 +108,35 @@ $(function () {
 
         return false;
     });
+
+    $("#dock-bar").hover(function () {
+        $(this).stop().animate({
+            'margin-right': 0
+        }, 200);
+    }, function () {
+        $(this).stop().animate({
+            'margin-right': -80
+        }, 200);
+    });
+
+    resizeDockBar();
+    $(window).on('resize', function () {
+        resizeDockBar();
+    });
 });
+
+function resizeDockBar()
+{
+    var calculatedHeight = $(window).height() - 55;
+    $("#dock-bar").height(calculatedHeight);
+}
 
 function openLinkInIframe(anchor)
 {
     var rowDiv = $('<div class="row" id="iframe-row"></div>');
     var colDiv = $('<div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1"></div>');
 
-    var calculatedHeight = $(window).height() - 125;
+    var calculatedHeight = $(window).height() - 55;
 
     colDiv.height(calculatedHeight);
 
@@ -133,9 +154,31 @@ function openLinkInIframe(anchor)
     body.prepend(rowDiv);
 
     var navigationRow = $('<div class="row" id="navigation-row"></div>');
-    var navigationCol = $('<div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1"></div>');
-    var buttonGroup = $('<div class="btn-group"></div>');
-    var closeButton = $('<a href="#" class="btn btn-default">Close</a>');
+    var navigationCol = $('<div class="col-md-12 col-sm-12"></div>');
+    var navigationWrapper = $('<div class="navigation-wrapper"></div>');
+    var buttonGroup = $('<div class="btn-group pull-right"></div>');
+    var clearFix = $('<div class="clearfix"></div>');
+
+    var newWindowButton = $('<a href="#" class="btn btn-default"><i class="fa fa-external-link"></i></a>');
+    newWindowButton.bind('click', function () {
+        window.open(anchor.data('href'), '_blank');
+
+        $("#iframe-row").remove();
+        unlockScroll();
+
+        return false;
+    });
+
+    var minimizeButton = $('<a href="#" class="btn btn-default"><i class="fa fa-toggle-right"></i></a>');
+    minimizeButton.bind('click', function () {
+        minimizeIframe(rowDiv);
+
+        unlockScroll();
+
+        return false;
+    });
+
+    var closeButton = $('<a href="#" class="btn btn-default"><i class="fa fa-close"></i></a>');
     closeButton.bind('click', function () {
         $("#iframe-row").remove();
 
@@ -144,20 +187,49 @@ function openLinkInIframe(anchor)
         return false;
     });
 
+    buttonGroup.append(newWindowButton);
+    buttonGroup.append(minimizeButton);
     buttonGroup.append(closeButton);
-    navigationCol.append(buttonGroup);
+
+    var title = anchor.text().trim();
+    var iframeTitle = $('<div class="iframe-title pull-left"></div>').html("<h3 class='iframe-title'>" + title + "</h3>");
+
+    navigationWrapper.append(iframeTitle);
+    navigationWrapper.append(buttonGroup);
+    navigationWrapper.append(clearFix);
+    navigationCol.append(navigationWrapper);
     navigationRow.append(navigationCol);
 
     colDiv.prepend(navigationRow);
+
+    iframeTitle.width(navigationWrapper.width() - buttonGroup.width());
 
     lockScroll();
 
     return false;
 }
 
+function minimizeIframe(iframeDiv)
+{
+    iframeDiv.hide();
+
+    var link = $('<a href="#" class="btn btn-default"></a>');
+    link.text(iframeDiv.find('h3.iframe-title').text());
+
+    link.bind('click', function () {
+        iframeDiv.show();
+
+        link.remove();
+
+        return false;
+    });
+
+    $("#dock-bar").find('.btn-group').append(link);
+}
+
 function resizeIframe(iframe)
 {
-    var calculatedHeight = $(window).height() - 125;
+    var calculatedHeight = $(window).height() - 55;
     iframe.height(calculatedHeight - 40);
 }
 

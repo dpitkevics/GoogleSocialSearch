@@ -126,11 +126,33 @@ ul.typeahead.dropdown-menu a strong {
 
 #iframe-row {
     position: fixed;
-    top: 115px;
+    top: 50px;
     width: 100%;
     z-index: 15;
 }
 
 #iframe-row > div {
     width: 83.33333333%;
+}
+
+#navigation-row .navigation-wrapper {
+    background: #4e5d6c;
+}
+
+#navigation-row .iframe-title {
+    text-align: center;
+}
+
+#navigation-row .iframe-title h3 {
+    font-size: 20px;
+    margin-top: 6px;
+}
+
+#dock-bar {
+    width: 120px;
+    margin-right: -80px;
+    position: fixed;
+    top: 50px;
+    right: 0;
+    z-index: 15;
 }
