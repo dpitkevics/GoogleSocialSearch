@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'guardian',
     'mathfilters',
+    'widget_tweaks',
     'Jooglin',
     'Search',
     'User',

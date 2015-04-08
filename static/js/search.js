@@ -115,12 +115,16 @@ function openLinkInIframe(anchor)
     var rowDiv = $('<div class="row" id="iframe-row"></div>');
     var colDiv = $('<div class="col-md-10 col-sm-10 col-md-offset-1 col-sm-offset-1"></div>');
 
-    var calculatedHeight = $(window).height() - 145;
+    var calculatedHeight = $(window).height() - 125;
 
     colDiv.height(calculatedHeight);
 
     var iframe = $('<iframe src="'+anchor.attr('href')+'" class="link-iframe"></iframe>');
-    iframe.height(calculatedHeight - 40);
+    resizeIframe(iframe);
+
+    $(window).on('resize', function () {
+        resizeIframe(iframe);
+    });
 
     var body = $('body');
 
@@ -149,6 +153,12 @@ function openLinkInIframe(anchor)
     lockScroll();
 
     return false;
+}
+
+function resizeIframe(iframe)
+{
+    var calculatedHeight = $(window).height() - 125;
+    iframe.height(calculatedHeight - 40);
 }
 
 function lockScroll(){

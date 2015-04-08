@@ -126,7 +126,7 @@ ul.typeahead.dropdown-menu a strong {
 
 #iframe-row {
     position: fixed;
-    top: 140px;
+    top: 115px;
     width: 100%;
     z-index: 15;
 }
