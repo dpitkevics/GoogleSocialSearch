@@ -149,10 +149,15 @@ ul.typeahead.dropdown-menu a strong {
 }
 
 #dock-bar {
-    width: 120px;
-    margin-right: -80px;
+    width: 170px;
+    margin-right: -120px;
     position: fixed;
     top: 50px;
     right: 0;
     z-index: 15;
+}
+
+#dock-bar .btn {
+    width: 170px;
+    white-space: normal;
 }

@@ -115,20 +115,33 @@ $(function () {
         }, 200);
     }, function () {
         $(this).stop().animate({
-            'margin-right': -80
+            'margin-right': -120
         }, 200);
-    });
-
-    resizeDockBar();
-    $(window).on('resize', function () {
-        resizeDockBar();
     });
 });
 
-function resizeDockBar()
+function setUpMinimizedIframes()
 {
-    var calculatedHeight = $(window).height() - 55;
-    $("#dock-bar").height(calculatedHeight);
+    var cookieData = $.cookie("minimized-iframe-list");
+    if (typeof (cookieData) == 'undefined') {
+        return;
+    }
+    var minimizedIframeList = JSON.parse(cookieData);
+    if (typeof (minimizedIframeList) != 'undefined') {
+        var executed = false;
+        $.each(minimizedIframeList, function (index, value) {
+            executed = true;
+            var obj = $(value);
+            if (obj.length > 0) {
+                openLinkInIframe(obj);
+                minimizeIframe($("#iframe-row"));
+            }
+        });
+
+        if (executed) {
+            unlockScroll();
+        }
+    }
 }
 
 function openLinkInIframe(anchor)
@@ -140,7 +153,7 @@ function openLinkInIframe(anchor)
 
     colDiv.height(calculatedHeight);
 
-    var iframe = $('<iframe src="'+anchor.attr('href')+'" class="link-iframe"></iframe>');
+    var iframe = $('<iframe src="'+anchor.attr('href')+'" data-src="'+anchor.attr('href')+'" class="link-iframe"></iframe>');
     resizeIframe(iframe);
 
     $(window).on('resize', function () {
@@ -161,6 +174,15 @@ function openLinkInIframe(anchor)
 
     var newWindowButton = $('<a href="#" class="btn btn-default"><i class="fa fa-external-link"></i></a>');
     newWindowButton.bind('click', function () {
+        var cookieData = $.cookie("minimized-iframe-list");
+        if (typeof (cookieData) != 'undefined') {
+            var minimizedIframeList = JSON.parse(cookieData);
+            if (typeof (minimizedIframeList) != 'undefined') {
+                delete minimizedIframeList[iframe.data('src')];
+                $.cookie("minimized-iframe-list", JSON.stringify(minimizedIframeList));
+            }
+        }
+
         window.open(anchor.data('href'), '_blank');
 
         $("#iframe-row").remove();
@@ -180,6 +202,15 @@ function openLinkInIframe(anchor)
 
     var closeButton = $('<a href="#" class="btn btn-default"><i class="fa fa-close"></i></a>');
     closeButton.bind('click', function () {
+        var cookieData = $.cookie("minimized-iframe-list");
+        if (typeof (cookieData) != 'undefined') {
+            var minimizedIframeList = JSON.parse(cookieData);
+            if (typeof (minimizedIframeList) != 'undefined') {
+                delete minimizedIframeList[iframe.data('src')];
+                $.cookie("minimized-iframe-list", JSON.stringify(minimizedIframeList));
+            }
+        }
+
         $("#iframe-row").remove();
 
         unlockScroll();
@@ -211,12 +242,37 @@ function openLinkInIframe(anchor)
 
 function minimizeIframe(iframeDiv)
 {
+    var cookieData = $.cookie("minimized-iframe-list");
+    if (typeof (cookieData) == 'undefined') {
+        minimizedIframeList = {};
+    } else {
+        var minimizedIframeList = JSON.parse(cookieData);
+        if (typeof (minimizedIframeList) == 'undefined' || minimizedIframeList.length == 0) {
+            minimizedIframeList = {};
+        }
+    }
+
+    var iframeSource = iframeDiv.find('iframe').data('src');
+    var anchor = $('a[data-href="' + iframeSource + '"]');
+    var anchorHtml = anchor.wrap('<span/>').parent().html();
+    if ($.inArray(anchorHtml, minimizedIframeList) < 0) {
+        minimizedIframeList[anchor.data('href')] = anchorHtml;
+    }
+    anchor.unwrap();
+    $.cookie("minimized-iframe-list", JSON.stringify(minimizedIframeList));
+
+    iframeDiv.data('id', iframeDiv.attr('id')).removeAttr('id');
     iframeDiv.hide();
 
     var link = $('<a href="#" class="btn btn-default"></a>');
     link.text(iframeDiv.find('h3.iframe-title').text());
 
     link.bind('click', function () {
+        if ($('#iframe-row').length > 0) {
+            minimizeIframe($("#iframe-row"));
+        }
+
+        iframeDiv.attr('id', iframeDiv.data('id')).removeData('id');
         iframeDiv.show();
 
         link.remove();
@@ -224,7 +280,7 @@ function minimizeIframe(iframeDiv)
         return false;
     });
 
-    $("#dock-bar").find('.btn-group').append(link);
+    $("#dock-bar").find('.dock-item-group').append(link);
 }
 
 function resizeIframe(iframe)
@@ -233,9 +289,11 @@ function resizeIframe(iframe)
     iframe.height(calculatedHeight - 40);
 }
 
+var $html, $body;
+
 function lockScroll(){
-    var $html = $('html');
-    var $body = $('body');
+    $html = $('html');
+    $body = $('body');
     var initWidth = $body.outerWidth();
     var initHeight = $body.outerHeight();
 
@@ -254,8 +312,8 @@ function lockScroll(){
 }
 
 function unlockScroll(){
-    var $html = $('html');
-    var $body = $('body');
+    $html = $('html');
+    $body = $('body');
     $html.css('overflow', $html.data('previous-overflow'));
     var scrollPosition = $html.data('scroll-position');
     window.scrollTo(scrollPosition[0], scrollPosition[1]);
