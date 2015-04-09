@@ -19,7 +19,7 @@
                     {{ item_comment.comment.submit_date|date:"M d, Y H:i" }}
                 </div>
 
-                <div class="col-md-4 col-sm-12 text-right">
+                <div class="col-md-4 col-sm-12">
                     <a href="{% url 'Search:report_comment' cpk=item_comment.pk|num_encode %}" class="report-comment-btn">
                         <i class="fa fa-ban"></i>
                         {% trans 'Report' %}

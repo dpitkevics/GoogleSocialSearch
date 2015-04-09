@@ -190,6 +190,9 @@ class SearchItemComments(models.Model):
     class Meta:
         db_table = 'search_item_comments'
         ordering = ('-submit_date',)
+        permissions = (
+            ('can_add_basic_html', 'Can Add Basic Html'),
+        )
 
 
 class SearchItemClick(models.Model):

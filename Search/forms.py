@@ -10,5 +10,5 @@ class SearchForm(Form):
 class SearchItemForm(forms.ModelForm):
     class Meta:
         widgets = {
-            'html_snippet': forms.Textarea()
+            'snippet': forms.Textarea()
         }
