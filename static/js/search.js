@@ -153,7 +153,8 @@ function openLinkInIframe(anchor)
 
     colDiv.height(calculatedHeight);
 
-    var iframe = $('<iframe src="'+anchor.attr('href')+'" data-src="'+anchor.data('href')+'" class="link-iframe"></iframe>');
+    var iframe = $('<iframe id="'+anchor.data('href')+'" src="'+anchor.attr('href')+'" data-src="'+anchor.data('href')+'" class="link-iframe"></iframe>');
+
     resizeIframe(iframe);
 
     $(window).on('resize', function () {
