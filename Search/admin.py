@@ -34,7 +34,7 @@ user_admin_site = UserAdmin(name='user_admin')
 
 
 class SearchItemAdmin(GuardedModelAdmin):
-    fields = ('title', 'snippet', 'html_snippet', 'owner_comment')
+    fields = ('title', 'snippet', 'owner_comment')
     form = SearchItemForm
 
     def get_queryset(self, request):
