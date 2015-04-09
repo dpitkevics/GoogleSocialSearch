@@ -153,7 +153,7 @@ function openLinkInIframe(anchor)
 
     colDiv.height(calculatedHeight);
 
-    var iframe = $('<iframe src="'+anchor.attr('href')+'" data-src="'+anchor.attr('href')+'" class="link-iframe"></iframe>');
+    var iframe = $('<iframe src="'+anchor.attr('href')+'" data-src="'+anchor.data('href')+'" class="link-iframe"></iframe>');
     resizeIframe(iframe);
 
     $(window).on('resize', function () {
@@ -172,16 +172,9 @@ function openLinkInIframe(anchor)
     var buttonGroup = $('<div class="btn-group pull-right"></div>');
     var clearFix = $('<div class="clearfix"></div>');
 
-    var newWindowButton = $('<a href="#" class="btn btn-default"><i class="fa fa-external-link"></i></a>');
+    var newWindowButton = $('<a href="#" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Open in new window"><i class="fa fa-external-link"></i></a>');
     newWindowButton.bind('click', function () {
-        var cookieData = $.cookie("minimized-iframe-list");
-        if (typeof (cookieData) != 'undefined') {
-            var minimizedIframeList = JSON.parse(cookieData);
-            if (typeof (minimizedIframeList) != 'undefined') {
-                delete minimizedIframeList[iframe.data('src')];
-                $.cookie("minimized-iframe-list", JSON.stringify(minimizedIframeList));
-            }
-        }
+        removeIframeCookie(iframe.data('src'));
 
         window.open(anchor.data('href'), '_blank');
 
@@ -191,7 +184,7 @@ function openLinkInIframe(anchor)
         return false;
     });
 
-    var minimizeButton = $('<a href="#" class="btn btn-default"><i class="fa fa-toggle-right"></i></a>');
+    var minimizeButton = $('<a href="#" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Minimize"><i class="fa fa-toggle-right"></i></a>');
     minimizeButton.bind('click', function () {
         minimizeIframe(rowDiv);
 
@@ -200,16 +193,9 @@ function openLinkInIframe(anchor)
         return false;
     });
 
-    var closeButton = $('<a href="#" class="btn btn-default"><i class="fa fa-close"></i></a>');
+    var closeButton = $('<a href="#" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Close"><i class="fa fa-close"></i></a>');
     closeButton.bind('click', function () {
-        var cookieData = $.cookie("minimized-iframe-list");
-        if (typeof (cookieData) != 'undefined') {
-            var minimizedIframeList = JSON.parse(cookieData);
-            if (typeof (minimizedIframeList) != 'undefined') {
-                delete minimizedIframeList[iframe.data('src')];
-                $.cookie("minimized-iframe-list", JSON.stringify(minimizedIframeList));
-            }
-        }
+        removeIframeCookie(iframe.data('src'));
 
         $("#iframe-row").remove();
 
@@ -236,8 +222,21 @@ function openLinkInIframe(anchor)
     iframeTitle.width(navigationWrapper.width() - buttonGroup.width());
 
     lockScroll();
+    body.tooltip({ selector: '[data-toggle="tooltip"]' });
 
     return false;
+}
+
+function removeIframeCookie(key)
+{
+    var cookieData = $.cookie("minimized-iframe-list");
+    if (typeof (cookieData) != 'undefined') {
+        var minimizedIframeList = JSON.parse(cookieData);
+        if (typeof (minimizedIframeList) != 'undefined') {
+            delete minimizedIframeList[key];
+            $.cookie("minimized-iframe-list", JSON.stringify(minimizedIframeList));
+        }
+    }
 }
 
 function minimizeIframe(iframeDiv)
