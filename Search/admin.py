@@ -37,6 +37,12 @@ class SearchItemAdmin(GuardedModelAdmin):
     fields = ('title', 'snippet', 'owner_comment')
     form = SearchItemForm
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(SearchItemAdmin, self).get_form(request, obj, **kwargs)
+        form.user = request.user
+
+        return form
+
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super(SearchItemAdmin, self).queryset(request)

@@ -78,6 +78,7 @@ class SearchItem(models.Model):
             ('can_buy', 'Can Buy'),
             ('can_sell', 'Can Sell'),
             ('owner', 'Owner'),
+            ('can_add_basic_html', 'Can Add Basic Html')
         )
 
     def __str__(self):
@@ -190,9 +191,6 @@ class SearchItemComments(models.Model):
     class Meta:
         db_table = 'search_item_comments'
         ordering = ('-submit_date',)
-        permissions = (
-            ('can_add_basic_html', 'Can Add Basic Html'),
-        )
 
 
 class SearchItemClick(models.Model):
