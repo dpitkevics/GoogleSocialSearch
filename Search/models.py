@@ -148,7 +148,7 @@ class SearchItem(models.Model):
 
         item_price = (view_count * settings.ITEM_VIEW_MULTIPLIER) + (click_count * settings.ITEM_CLICK_MULTIPLIER) + (
             votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
-        return item_price
+        return max(item_price, 0)
 
     def is_user_favourite(self, user):
         try:
