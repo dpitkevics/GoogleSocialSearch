@@ -469,6 +469,9 @@ def offer_action(request):
             search_item.owner = search_item_offer.user
             search_item.save()
 
+            remove_perm('owner', request.user, search_item)
+            assign_perm('owner', search_item_offer.user, search_item)
+
             search_item_offer.offer_status = search_item_offer.OFFER_STATUS_ACCEPTED
             search_item_offer.save()
 
