@@ -36,6 +36,10 @@ user_admin_site = UserAdmin(name='user_admin')
 class SearchItemAdmin(GuardedModelAdmin):
     fields = ('title', 'snippet', 'owner_comment')
     form = SearchItemForm
+    actions_on_top = False
+
+    change_form_template = \
+        'admin/change_form.html'
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(SearchItemAdmin, self).get_form(request, obj, **kwargs)
