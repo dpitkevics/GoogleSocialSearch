@@ -167,3 +167,16 @@ ul.typeahead.dropdown-menu a strong {
     margin-right: 0;
     float: right;
 }
+
+#carousel-homepage .carousel-indicators {
+    bottom: -20px;
+}
+
+/*#carousel-homepage .carousel-inner {*/
+    /*max-height: 500px;*/
+    /*overflow: hidden;*/
+/*}*/
+
+/*#carousel-homepage .item img {*/
+    /*height: auto;*/
+/*}*/

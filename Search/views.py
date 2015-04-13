@@ -33,7 +33,11 @@ def index(request):
     if 'query' in request.GET:
         form = SearchForm(request.GET)
     else:
-        form = SearchForm()
+        if request.user.is_authenticated():
+            form = SearchForm()
+        else:
+            url = '/?query=homepage'
+            return HttpResponseRedirect(url)
 
     if 'p' in request.GET:
         if 'query' in request.GET:

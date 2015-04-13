@@ -1,7 +1,134 @@
 {% load settings %}
+{% load i18n %}
+{% load staticfiles %}
 
 <div class="row">
     <div class="col-md-12 col-sm-12 text-center">
         <h1>{% settings_value "SITE_NAME"%}</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-sm-12">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <h2>{% trans 'First new generation search engine!' %}</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <ul>
+                    <li>
+                        <h4>
+                            <i class="fa fa-search"></i>
+                            {% trans 'Find what You have been looking for' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-thumbs-up"></i>
+                            {% trans 'Show Your opinion about visited link by upvoting or downvoting links' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-edit"></i>
+                            {% trans 'Leave Your comment about the link You have visited for the next visitor' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-money"></i>
+                            {% trans 'Earn virtual money by using Jooglin. Use it to buy and administrate search items' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-mortar-board"></i>
+                            {% trans 'Access new features by leveling up for profile' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-newspaper-o"></i>
+                            {% trans 'Make profit of adding Your comment or advertisement to Your owned search items' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-heart"></i>
+                            {% trans 'Found link You like? Add it as a favourite.' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-facebook-square"></i>
+                            {% trans 'We use Facebook to authorize users. One click and You are registered in Jooglin' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-child"></i>
+                            {% trans 'We make everything as simple as it is possible. Thats why it is "Jooglin. Simplicity."' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-terminal"></i>
+                            {% trans 'Our future plan is to make possible for everyone to develop their plugins for Jooglin. Imagine world, where You would like to see clock, when You enter "time" word in search engine and it actually shows clock. It will be possible soon.' %}
+                        </h4>
+                    </li>
+                    <li>
+                        <h4>
+                            <i class="fa fa-line-chart"></i>
+                            {% trans 'And We will be making new and unique ideas to Jooglin. Next generation, now, is actually - this generation!' %}
+                        </h4>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-sm-12">
+        <div id="carousel-homepage" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-homepage" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-homepage" data-slide-to="1"></li>
+                <li data-target="#carousel-homepage" data-slide-to="2"></li>
+                <li data-target="#carousel-homepage" data-slide-to="3"></li>
+                <li data-target="#carousel-homepage" data-slide-to="4"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img src="{% static 'images/slider/search.png' %}" alt="{% trans 'Search preview' %}">
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/slider/vote.png' %}" alt="{% trans 'Search preview' %}">
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/slider/comment.png' %}" alt="{% trans 'Search preview' %}">
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/slider/administrate.png' %}" alt="{% trans 'Search preview' %}">
+                </div>
+                <div class="item">
+                    <img src="{% static 'images/slider/owner.png' %}" alt="{% trans 'Search preview' %}">
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#carousel-homepage" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">{% trans 'Previous' %}</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-homepage" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">{% trans 'Next' %}</span>
+            </a>
+        </div>
     </div>
 </div>
