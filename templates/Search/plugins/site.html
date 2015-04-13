@@ -92,24 +92,64 @@
             </div>
 
             <div class="pull-right">
-                <div class="btn-group" role="group">
-                    {% if item.owner == request.user %}
-                        <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
-                            <i class="fa fa-money"></i>
-                            {% trans 'Sell' %}
-                        </a>
-                    {% else %}
-                        <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}" class="btn btn-info purchase-btn">
-                            <i class="fa fa-shopping-cart"></i>
-                            {% trans 'Buy' %}
-                        </a>
-                    {% endif %}
+                <div class="row pull-right">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="btn-group" role="group">
+                            {% if item.owner == request.user %}
+                                <a href="{% url 'Search:purchase' %}?method=sell&srpk={{ item.pk|num_encode }}"
+                                   class="btn btn-info purchase-btn">
+                                    <i class="fa fa-money"></i>
+                                    {% trans 'Sell' %}
+                                </a>
+                            {% else %}
+                                {% if item.owner == None %}
+                                    <a href="{% url 'Search:purchase' %}?method=buy&srpk={{ item.pk|num_encode }}"
+                                       class="btn btn-info purchase-btn">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        {% trans 'Buy' %}
+                                    </a>
+                                {% else %}
+                                    <a href="#offer-form-{{ item.pk|num_encode }}" class="btn btn-info offer-btn"
+                                       data-toggle="collapse" aria-expanded="false"
+                                       aria-controls="offer-form-{{ item.pk|num_encode }}">
+                                        <i class="fa fa-ticket"></i>
+                                        {% trans 'Buy Offer' %}
+                                    </a>
+                                {% endif %}
+                            {% endif %}
 
-                    <a class="btn btn-success no-btn">
-                        {% blocktrans with item.get_price as price %}
-                            Price: <span class="badge">{{ price }}</span>
-                        {% endblocktrans %}
-                    </a>
+                            <a class="btn btn-success no-btn">
+                                {% blocktrans with item.get_price as price %}
+                                    Price: <span class="badge">{{ price }}</span>
+                                {% endblocktrans %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="collapse margin-top" id="offer-form-{{ item.pk|num_encode }}">
+                            <form action="{% url 'Search:offer' %}" method="post"
+                                  onsubmit="return makeOfferFormSubmit($(this))">
+                                {% csrf_token %}
+
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <input placeholder="{% trans 'Amount' %}" type="text" class="form-control"
+                                               name="amount" id="amount"/>
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-12 fixed-offer-col">
+                                        <input type="submit" class="btn btn-success"
+                                               value="{% trans 'Make an offer' %}"/>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="srpk" value="{{ item.pk|num_encode }}"/>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

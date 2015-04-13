@@ -161,3 +161,9 @@ ul.typeahead.dropdown-menu a strong {
     width: 170px;
     white-space: normal;
 }
+
+.fixed-offer-col {
+    width: auto;
+    margin-right: 0;
+    float: right;
+}
