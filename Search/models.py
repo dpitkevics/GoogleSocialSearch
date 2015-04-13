@@ -114,7 +114,7 @@ class SearchItem(models.Model):
               "JOIN search_items AS si ON siv.search_item_id = si.id " \
               "WHERE siv.created_at >= NOW() - INTERVAL 1 MONTH " \
               "AND siv.search_item_id = %s " \
-              "AND si.owner_id != siv.user_id " \
+              "AND (si.owner_id IS NULL OR si.owner_id != siv.user_id) " \
               "GROUP BY siv.ip_address, DATE(siv.created_at)"
 
         cursor.execute(sql, [settings.MAX_VIEWS_PER_IP_PER_DAY, self.pk])
@@ -129,7 +129,7 @@ class SearchItem(models.Model):
               "JOIN search_items AS si ON sic.search_item_id = si.id " \
               "WHERE sic.created_at >= NOW() - INTERVAL 1 MONTH " \
               "AND sic.search_item_id = %s " \
-              "AND si.owner_id != sic.user_id " \
+              "AND (si.owner_id IS NULL OR si.owner_id != sic.user_id) " \
               "GROUP BY sic.ip_address, DATE(sic.created_at)"
 
         cursor.execute(sql, [settings.MAX_CLICKS_PER_IP_PER_DAY, self.pk])
