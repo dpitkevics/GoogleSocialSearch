@@ -33,11 +33,8 @@ def index(request):
     if 'query' in request.GET:
         form = SearchForm(request.GET)
     else:
-        if request.user.is_authenticated():
-            form = SearchForm()
-        else:
-            url = '/?query=homepage'
-            return HttpResponseRedirect(url)
+        url = '/?query=homepage'
+        return HttpResponseRedirect(url)
 
     if 'p' in request.GET:
         if 'query' in request.GET:
@@ -349,6 +346,7 @@ def purchase(request):
 
             search_item.owner = request.user
             search_item.owner_updated_at = timezone.now()
+            search_item.price_at_owner_change = search_item.get_price()
             search_item.save()
 
             assign_perm('owner', request.user, search_item)
@@ -368,6 +366,7 @@ def purchase(request):
 
             search_item.owner = None
             search_item.owner_updated_at = datetime.now()
+            search_item.price_at_owner_change = None
             search_item.save()
 
             profile.add_balance(item_price)
@@ -471,6 +470,7 @@ def offer_action(request):
 
             search_item = search_item_offer.search_item
             search_item.owner = search_item_offer.user
+            search_item.price_at_owner_change = search_item.get_price()
             search_item.save()
 
             remove_perm('owner', request.user, search_item)

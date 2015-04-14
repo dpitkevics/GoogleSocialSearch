@@ -9,6 +9,8 @@ from Comments.models import Comment
 from Jooglin import settings
 from Jooglin.lib.database import dictfetchall
 
+from Search.lib import pricelib
+
 
 class SearchRequest(models.Model):
     search_time = models.FloatField(default=0)
@@ -68,6 +70,7 @@ class SearchItem(models.Model):
     owner = models.ForeignKey(User, null=True)
     owner_comment = models.TextField(null=True)
     owner_updated_at = models.DateTimeField(null=True)
+    price_at_owner_change = models.FloatField(null=True)
 
     search_request = models.ManyToManyField(SearchRequest)
 
@@ -107,48 +110,9 @@ class SearchItem(models.Model):
         return self.get_vote_score() + self.click_count + self.view_count
 
     def get_price(self):
-        cursor = connection.cursor()
+        price = pricelib.Price(search_item=self, search_item_voter=SearchItemVoter)
 
-        # Retrieving view count
-        sql = "SELECT LEAST(COUNT(*), %s) AS view_count FROM search_item_views AS siv " \
-              "JOIN search_items AS si ON siv.search_item_id = si.id " \
-              "WHERE siv.created_at >= NOW() - INTERVAL 1 MONTH " \
-              "AND siv.search_item_id = %s " \
-              "AND (si.owner_id IS NULL OR si.owner_id != siv.user_id) " \
-              "GROUP BY siv.ip_address, DATE(siv.created_at)"
-
-        cursor.execute(sql, [settings.MAX_VIEWS_PER_IP_PER_DAY, self.pk])
-        rows = dictfetchall(cursor)
-
-        view_count = 0
-        for row in rows:
-            view_count += row['view_count']
-
-        # Retrieving click count
-        sql = "SELECT LEAST(COUNT(*), %s) AS click_count FROM search_item_clicks AS sic " \
-              "JOIN search_items AS si ON sic.search_item_id = si.id " \
-              "WHERE sic.created_at >= NOW() - INTERVAL 1 MONTH " \
-              "AND sic.search_item_id = %s " \
-              "AND (si.owner_id IS NULL OR si.owner_id != sic.user_id) " \
-              "GROUP BY sic.ip_address, DATE(sic.created_at)"
-
-        cursor.execute(sql, [settings.MAX_CLICKS_PER_IP_PER_DAY, self.pk])
-        rows = dictfetchall(cursor)
-
-        click_count = 0
-        for row in rows:
-            click_count += row['click_count']
-
-        upvotes = SearchItemVoter.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self,
-                                                 vote_type=SearchItemVoter.VOTE_TYPE_UP)
-        downvotes = SearchItemVoter.objects.filter(created_at__gte=date.today() - timedelta(days=30), search_item=self,
-                                                   vote_type=SearchItemVoter.VOTE_TYPE_DOWN)
-
-        votes_count = len(upvotes) - len(downvotes)
-
-        item_price = (view_count * settings.ITEM_VIEW_MULTIPLIER) + (click_count * settings.ITEM_CLICK_MULTIPLIER) + (
-            votes_count * settings.ITEM_VOTE_SCORE_MULTIPLIER)
-        return max(item_price, 0)
+        return price.get_current_price()
 
     def is_user_favourite(self, user):
         try:
