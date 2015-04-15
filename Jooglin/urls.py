@@ -11,6 +11,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^', include('Search.urls', namespace='Search')),
     url(r'^user/', include('User.urls', namespace='User')),
+    url(r'^help/', include('Help.urls', namespace='Help')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^user-admin/', include(user_admin_site.urls)),
     url('', include('social.apps.django_app.urls', namespace='social')),

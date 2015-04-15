@@ -1,6 +1,14 @@
 $(function () {
     var body = $('body');
 
+    var query_input = $("#id_query");
+    query_input.bind("focus", function () {
+        $(this).select();
+    });
+    query_input.bind("mouseup", function () {
+        return false;
+    });
+
     body.on('click', '.vote-link', function () {
         var button = $(this);
         var url = button.attr('href');

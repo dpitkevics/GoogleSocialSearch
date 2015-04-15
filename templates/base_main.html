@@ -79,6 +79,14 @@
                                 <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">{% trans "Login with Facebook" %}</a>
                             </li>
                         {% endif %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-question"></i> {% trans 'Help' %} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{% url 'Help:user_levels' %}">{% trans 'User levels' %}</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
