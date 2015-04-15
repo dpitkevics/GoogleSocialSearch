@@ -105,14 +105,14 @@
 
     <footer id="footer" class="navbar-fixed-bottom">
         <div class="container">
-            <div class="row">
+            <div class="row padding-top">
                 <div class="col-md-6 col-sm-6">
                     {% settings_value "SITE_NAME" %} &copy;, {% now "Y" %}
                 </div>
 
                 <div class="col-md-6 col-sm-6 text-right">
                     <div class="btn-group">
-                        <a href="#">{% trans 'About Us' %}</a> |
+                        <a href="{% url 'Search:about_us' %}">{% trans 'About Us' %}</a> |
                         <a href="{% url 'Search:privacy_policy' %}">{% trans 'Privacy Policy' %}</a> |
                         <a href="mailto:info@jooglin.com">{% trans 'Contact Us' %}</a>
                     </div>

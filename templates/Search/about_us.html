@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+
+{% load settings %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 text-center">
+            <h1>{% settings_value "SITE_NAME"%}</h1>
+        </div>
+    </div>
+
+    {% include 'Search/includes/about_us.html' %}
+{% endblock %}

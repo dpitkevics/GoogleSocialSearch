@@ -21,4 +21,5 @@ urlpatterns = patterns('',
     url(r'^offer-action/$', views.offer_action, name='offer_action'),
     url(r'^report-comment/(?P<cpk>.+)/$', views.report_comment, name='report_comment'),
     url(r'^privacy-policy/$', views.privacy_policy, name='privacy_policy'),
+    url(r'^about-us/$', views.about_us, name='about_us'),
 )
