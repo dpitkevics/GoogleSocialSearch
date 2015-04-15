@@ -537,5 +537,11 @@ def report_comment(request, cpk):
     return HttpResponse('')
 
 
+def privacy_policy(request):
+    context = {}
+
+    return render(request, 'Search/privacy_policy.html', context)
+
+
 def error404(request):
     return HttpResponseNotFound(render_to_response('404.html'))
