@@ -1,9 +1,15 @@
 {% load pagination %}
+{% load templating %}
+
+{% set is_visible_on_small = False %}
 
 <nav>
     <ul class="pagination">
         {% for page_number, page in pagination|retrieve_page_array %}
-            <li {% if page_number == 'current' %}class="active"{% endif %}>
+            {% if page_number == 'current' %}
+                {% set is_visible_on_small = True %}
+            {% endif %}
+            <li class="{% if is_visible_on_small == False and page_number != 'previous' or page_number == 'next' or page_number == 'last' %}hidden-xs hidden-sm{% endif %} {% if page_number == 'current' %}active{% endif %}">
                 <a href="{{ pagination|build_uri:page_number }}">{{ page }}</a>
             </li>
         {% endfor %}

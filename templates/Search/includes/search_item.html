@@ -130,7 +130,7 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 {% if 'www.youtube.com/watch?v=' in item.link %}
-                    <iframe width="560" height="315" src="{{ item|get_youtube_url }}" frameborder="0" allowfullscreen></iframe>
+                    <iframe style="width: 100%; height: 315px;" src="{{ item|get_youtube_url }}" frameborder="0" allowfullscreen></iframe>
                 {% endif %}
             </div>
         </div>
