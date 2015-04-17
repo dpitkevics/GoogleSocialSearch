@@ -4,13 +4,13 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-6 col-sm-12 col-md-offset-3">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <h1>{% trans 'Set as homepage' %}</h1>
-                </div>
-            </div>
+        <div class="col-md-12 col-sm-12 text-center">
+            <h1>{% trans 'Set as homepage' %}</h1>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <h3>{% trans 'Google Chrome' %}</h3>
@@ -88,6 +88,108 @@
                         <li>
                             {% blocktrans %}
                                 To retrieve more info, <a href="https://support.mozilla.org/en-US/kb/how-to-set-the-home-page" target="_blank">Click Here</a>
+                            {% endblocktrans %}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h3>{% trans 'Internet Explorer' %}</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ol>
+                        <li>
+                            {% blocktrans %}
+                                On the Start screen, tap or click <strong>Internet Explorer</strong> to open Internet Explorer.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Go to a page that you'd like to set as a home page.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Swipe in from the right edge of the screen, and then tap <strong>Settings</strong>.<br />
+                                (If you're using a mouse, point to the lower-right corner of the screen, move the mouse pointer up, and then click <strong>Settings</strong>.)
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Tap or click <strong>Options</strong>, and under <strong>Home pages</strong>, tap or click <strong>Customize</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Tap or click <strong>Add current site</strong>, edit the URL if you'd like, and then tap or click <strong>Add</strong> to make the site one of your home pages.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                To retrieve more info, <a href="http://windows.microsoft.com/en-us/internet-explorer/change-home-page#ie=ie-11" target="_blank">Click Here</a>
+                            {% endblocktrans %}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h3>{% trans 'Safari' %}</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ol>
+                        <li>
+                            {% blocktrans %}
+                                Choose <strong>Safari</strong> > <strong>Preferences</strong>, then click <strong>General</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Enter a webpage address, which is <strong>http://jooglin.com</strong> in the Homepage field
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                To retrieve more info, <a href="https://support.apple.com/kb/PH19286?locale=en_US&viewlocale=en_US" target="_blank">Click Here</a>
+                            {% endblocktrans %}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h3>{% trans 'Opera' %}</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ol>
+                        <li>
+                            {% blocktrans %}
+                                Open <strong>Opera</strong> > <strong>Preferences</strong> > <strong>General</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Enter a webpage address, which is <strong>http://jooglin.com</strong> in the Homepage field
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                To retrieve more info, <a href="http://help.opera.com/Mac/12.10/en/homepage.html" target="_blank">Click Here</a>
                             {% endblocktrans %}
                         </li>
                     </ol>
