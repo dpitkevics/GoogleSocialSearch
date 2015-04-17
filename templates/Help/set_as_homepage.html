@@ -1,0 +1,98 @@
+{% extends 'base_generic.html' %}
+
+{% load i18n %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h1>{% trans 'Set as homepage' %}</h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h3>{% trans 'Google Chrome' %}</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ol>
+                        <li>
+                            {% blocktrans %}
+                                In the top-right corner of your window, click the Chrome menu
+                                <img src="https://lh4.ggpht.com/IB7eZ2ht1pEixChJA4xp6iejr1xw3rXY_yJNeHgHajBRTzLB0ldIpEFje8gyeB4ydp6xpQpJ=w18-h18" alt="Chrome Settings Icon" />
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Select <strong>Settings</strong>. (If you're using a Chromebook, click "Show advanced settings" at the bottom of the page.)
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Under "On startup," click <strong>Open a specific page or set of pages</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Click <strong>Set pages</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Enter <strong>jooglin.com</strong> in input field.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Click <strong>OK</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                To retrieve more info, <a href="https://support.google.com/chrome/answer/95314?hl=en" target="_blank">Click Here</a>
+                            {% endblocktrans %}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h3>{% trans 'Mozilla Firefox' %}</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ol>
+                        <li>
+                            {% blocktrans %}
+                                Open a tab with the web page you want to use as your home page.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Drag and drop that tab onto the Home button  Home Button
+                                <img src="https://support.cdn.mozilla.net/media/uploads/gallery/images/2014-02-05-12-41-52-59781d.png" alt="Firefox Icon" />.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Click <span class="label label-default">Yes</span> to set this page as your home page.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                To retrieve more info, <a href="https://support.mozilla.org/en-US/kb/how-to-set-the-home-page" target="_blank">Click Here</a>
+                            {% endblocktrans %}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
