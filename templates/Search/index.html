@@ -116,5 +116,7 @@
                 });
             {% endif %}
         });
+
+    ga('send', 'event', 'search', 'view', {'query': $("#id_query").val()});
     </script>
 {% endblock %}
