@@ -4,6 +4,86 @@
 
 {% block content %}
     <div class="row">
-        search engine
+        <div class="col-md-12 col-sm-12 text-center">
+            <h1>{% trans 'Set as default search engine' %}</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-md-offset-3">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h3>{% trans 'Google Chrome' %}</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <ol>
+                        <li>
+                            {% blocktrans %}
+                                In the top-right corner of your window, click the Chrome menu
+                                <img src="https://lh4.ggpht.com/IB7eZ2ht1pEixChJA4xp6iejr1xw3rXY_yJNeHgHajBRTzLB0ldIpEFje8gyeB4ydp6xpQpJ=w18-h18" alt="Chrome Settings Icon" />
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Select <strong>Settings</strong>. (If you're using a Chromebook, click "Show advanced settings" at the bottom of the page.)
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Go to the "Search" section.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Click <strong>Manage search engines...</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Scroll to very bottom of new modal window.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                In <strong>Add new search engine</strong> field enter <strong>Jooglin.com</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                In <strong>Keyword</strong> field enter <strong>Jooglin.com</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                In <strong>URL with %s in place of query</strong> field enter <strong>http://jooglin.com/?query=%s</strong>.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Click outside of input box and see that new search engine is added.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Find <strong>Jooglin.com</strong> search engine (<strong>Jooglin.com</strong> should appear in <strong>First</strong> column), point mouse over it and click <strong>Make default</strong>
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                Click <strong>Done</strong>
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans %}
+                                To retrieve more info, <a href="https://support.google.com/chrome/answer/95426?hl=en" target="_blank">Click Here</a>
+                            {% endblocktrans %}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
