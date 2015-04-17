@@ -11,7 +11,7 @@ class AbstractPlugin(object):
     @staticmethod
     def load_plugin(request):
         query = request.GET['query']
-        if 'site' in query:
+        if 'site' in query and query.startswith('site'):
             query_parts = query.split(' ')
             site_link = query_parts[-1]
             query = 'site :link:'
