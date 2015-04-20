@@ -219,6 +219,26 @@ BASIC_LEVEL_HTML_TAGS = 'strong b a'
 # Pagination
 MAX_SEARCH_PAGES = 100
 
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
+        },
+    },
+    'loggers': {
+        'facebook.debug': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 try:
     from Jooglin.local_settings import *
 except ImportError:
