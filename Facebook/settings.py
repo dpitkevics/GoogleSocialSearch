@@ -3,7 +3,7 @@ from warnings import warn
 from django.conf import settings
 
 # A string describing the Facebook application's ID.
-FACEBOOK_APPLICATION_ID = getattr(settings, 'FACEBOOK_APPLICATION_ID')
+FACEBOOK_APPLICATION_ID = getattr(settings, 'FACEBOOK_APPLICATION_ID', None)
 
 # A string describing the Facebook application's canvas URL.
 FACEBOOK_APPLICATION_CANVAS_URL = getattr(settings, 'FACEBOOK_APPLICATION_CANVAS_URL', None)
@@ -12,10 +12,10 @@ FACEBOOK_APPLICATION_CANVAS_URL = getattr(settings, 'FACEBOOK_APPLICATION_CANVAS
 FACEBOOK_AUTHORIZATION_REDIRECT_URL = getattr(settings, 'FACEBOOK_AUTHORIZATION_REDIRECT_URL', None)
 
 # A string describing the Facebook application's secret key.
-FACEBOOK_APPLICATION_SECRET_KEY = getattr(settings, 'FACEBOOK_APPLICATION_SECRET_KEY')
+FACEBOOK_APPLICATION_SECRET_KEY = getattr(settings, 'FACEBOOK_APPLICATION_SECRET_KEY', None)
 
 # A string describing the Facebook application's namespace.
-FACEBOOK_APPLICATION_NAMESPACE = getattr(settings, 'FACEBOOK_APPLICATION_NAMESPACE')
+FACEBOOK_APPLICATION_NAMESPACE = getattr(settings, 'FACEBOOK_APPLICATION_NAMESPACE', None)
 
 # A list of regular expressions describing paths on which Fandjango should be disabled.
 DISABLED_PATHS = getattr(settings, 'FANDJANGO_DISABLED_PATHS', [])
@@ -25,7 +25,7 @@ ENABLED_PATHS = getattr(settings, 'FANDJANGO_ENABLED_PATHS', [])
 
 # A string describing a view that will be rendered for users that refuse to authorize the application.
 AUTHORIZATION_DENIED_VIEW = getattr(settings, 'FANDJANGO_AUTHORIZATION_DENIED_VIEW',
-                                    'fandjango.views.authorization_denied')
+                                    'Facebook.views.authorization_denied')
 
 # A list of strings describing `permissions <http://developers.facebook.com/docs/reference/api/permissions/>`_
 # that will be requested upon authorizing the application.
