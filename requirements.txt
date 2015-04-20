@@ -20,3 +20,6 @@ django-debug-toolbar
 django-debug-panel
 django-mathfilters
 bleach
+facepy
+jsonfield
+python-dateutil
