@@ -2,6 +2,7 @@
 {% load settings %}
 {% load i18n %}
 {% load money %}
+{% load templating %}
 
 <!DOCTYPE html>
 <html>
@@ -17,6 +18,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/sticky-footer.css' %}" />
 
     <link rel="icon" href="{% static 'favicon.ico' %}" />
+
+    {% render_css_files %}
 
     {% block bootstrap_theme %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme-used.css' %}" />
@@ -137,6 +140,8 @@
     <script src="{% static 'js/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/jquery.loadingbar.js' %}"></script>
+
+    {% render_js_files %}
 
     <script>
         window.fbAsyncInit = function () {

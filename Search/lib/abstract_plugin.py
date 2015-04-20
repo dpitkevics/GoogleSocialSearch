@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from Search.models import SearchPlugin
 from Jooglin.lib.classes import str_to_class
+from Jooglin.templatetags.templating import StaticFile
 
 
 class AbstractPlugin(object):
@@ -30,6 +31,12 @@ class AbstractPlugin(object):
             search_plugin_instance = None
 
         return search_plugin_instance
+
+    def add_css(self, css_name):
+        StaticFile.css_files.append(css_name)
+
+    def add_js(self, js_name):
+        StaticFile.js_files.append(js_name)
 
     def render(self):
         raise NotImplementedError("Render method should be implemented")
