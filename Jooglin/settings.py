@@ -96,6 +96,9 @@ DATABASES = {
     }
 }
 
+# X-FRAME-ORIGIN Configuration
+X_FRAME_OPTIONS = 'ALLOW-FROM https://apps.facebook.com'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
